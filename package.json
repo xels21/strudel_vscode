@@ -1,0 +1,210 @@
+{
+  "name": "strudel-vscode",
+  "displayName": "Strudel Live Coding",
+  "description": "VS Code extension for live coding with Strudel - real-time synchronization between editor and browser",
+  "version": "1.0.0",
+  "publisher": "strudel",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Education"
+  ],
+  "keywords": [
+    "strudel",
+    "live coding",
+    "music",
+    "algorave",
+    "audio",
+    "patterns"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onCommand:strudel.launch"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "strudel.launch",
+        "title": "Launch Strudel",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.quit",
+        "title": "Quit Strudel",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.toggle",
+        "title": "Toggle Play/Stop",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.update",
+        "title": "Update/Evaluate Code",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.stop",
+        "title": "Stop Playback",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.setActiveEditor",
+        "title": "Set Active Editor for Sync",
+        "category": "Strudel"
+      },
+      {
+        "command": "strudel.execute",
+        "title": "Set Active Editor and Update",
+        "category": "Strudel"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "strudel.launch",
+        "key": "ctrl+shift+s l",
+        "mac": "cmd+shift+s l"
+      },
+      {
+        "command": "strudel.quit",
+        "key": "ctrl+shift+s q",
+        "mac": "cmd+shift+s q"
+      },
+      {
+        "command": "strudel.toggle",
+        "key": "ctrl+shift+s t",
+        "mac": "cmd+shift+s t"
+      },
+      {
+        "command": "strudel.update",
+        "key": "ctrl+shift+s u",
+        "mac": "cmd+shift+s u"
+      },
+      {
+        "command": "strudel.stop",
+        "key": "ctrl+shift+s s",
+        "mac": "cmd+shift+s s"
+      },
+      {
+        "command": "strudel.execute",
+        "key": "ctrl+shift+s x",
+        "mac": "cmd+shift+s x"
+      }
+    ],
+    "configuration": {
+      "title": "Strudel",
+      "properties": {
+        "strudel.ui.maximizeMenuPanel": {
+          "type": "boolean",
+          "default": false,
+          "description": "Maximize the menu panel for side-by-side workflow"
+        },
+        "strudel.ui.hideMenuPanel": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the Strudel menu panel completely"
+        },
+        "strudel.ui.hideTopBar": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the default Strudel top bar (controls)"
+        },
+        "strudel.ui.hideCodeEditor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the Strudel code editor"
+        },
+        "strudel.ui.hideErrorDisplay": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the Strudel eval error display under the editor"
+        },
+        "strudel.updateOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically trigger code evaluation after saving (only if playback already started)"
+        },
+        "strudel.syncCursor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable two-way cursor position sync between VS Code and Strudel editor"
+        },
+        "strudel.reportEvalErrors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Report evaluation errors from Strudel as VS Code notifications"
+        },
+        "strudel.customCssFile": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a custom CSS file to style the Strudel web editor"
+        },
+        "strudel.headless": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run the browser without launching a window (headless mode)"
+        },
+        "strudel.browserDataDir": {
+          "type": "string",
+          "default": "",
+          "description": "Path to directory where Strudel browser user data is stored (empty = default)"
+        },
+        "strudel.browserExecutablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to a browser executable (empty = auto-detect)"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "strudel",
+        "aliases": ["Strudel", "strudel"],
+        "extensions": [".str", ".std", ".strudel"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "strudel",
+        "scopeName": "source.js.strudel",
+        "path": "./syntaxes/strudel.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "puppeteer": "^22.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strudel/strudel-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/strudel/strudel-vscode/issues"
+  },
+  "homepage": "https://github.com/strudel/strudel-vscode#readme",
+  "license": "AGPL-3.0"
+}
