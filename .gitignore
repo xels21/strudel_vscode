@@ -3,5 +3,5 @@ node_modules
 .vscode-test/
 *.vsix
 .DS_Store
-strudel
-hydra
+_strudel
+_hydra

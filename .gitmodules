@@ -1,7 +1,7 @@
 # just as reference (e.g. autocomplete)
-# [submodule "strudel"]
-# 	path = strudel
+# [submodule "_strudel"]
+# 	path = _strudel
 # 	url = https://codeberg.org/uzu/strudel.git
-# [submodule "hydra"]
-# 	path = hydra
+# [submodule "_hydra"]
+# 	path = _hydra
 # 	url = https://github.com/hydra-synth/hydra
