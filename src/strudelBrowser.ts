@@ -176,7 +176,7 @@ export class StrudelBrowser {
         if (content === this.lastContent) return;
         this.lastContent = content;
 
-        await this.page.evaluate((newContent) => {
+        await this.page.evaluate((newContent: string) => {
             const view = (window as any).strudelMirror.editor;
             const oldContent = view.state.doc.toString();
 
@@ -221,7 +221,7 @@ export class StrudelBrowser {
     async sendCursorPosition(row: number, col: number): Promise<void> {
         if (!this.page || !this.isReady) return;
 
-        await this.page.evaluate(({ row, col }) => {
+        await this.page.evaluate(({ row, col }: { row: number, col: number }) => {
             const view = (window as any).strudelMirror.editor;
             const lineCount = view.state.doc.lines;
             const clampedRow = Math.max(1, Math.min(row, lineCount));

@@ -1,0 +1,33 @@
+// Test file for Strudel autocompletion
+// Try typing any of these function names to see autocompletion:
+
+// Basic patterns
+note("c d e f")
+sound("bd hh")
+stack()
+
+// Pattern transformations 
+fast()
+slow()
+rev()
+jux()
+every()
+
+// Audio effects
+gain()
+pan()
+lpf()
+delay()
+room()
+
+// Scales and chords
+scale()
+chord()
+
+// Random functions
+rand()
+choose()
+shuffle()
+
+// Example Strudel pattern:
+// note("c d e f").fast(2).sound("piano").gain(0.5)

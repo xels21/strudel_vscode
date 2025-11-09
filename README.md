@@ -9,6 +9,8 @@ This extension launches Strudel in a browser window and provides real-time two-w
 ## Features
 
 - **Real-time sync** - Two-way synchronization between VS Code and Strudel editor
+- **Intelligent autocompletion** - Complete autocompletion for all Strudel functions with documentation
+- **Function documentation** - Hover over functions to see detailed documentation, parameters, and examples
 - **Playback control** - Control Strudel's Play/Stop and Update functions directly from VS Code
 - **Side by side workflow** - Maximized Strudel menu panel and (optionally) hidden top bar for seamless workflow
 - **File based** - Save your files as `*.str` or `*.std` and open them right away in Strudel through VS Code
@@ -48,6 +50,27 @@ This extension launches Strudel in a browser window and provides real-time two-w
 | `Strudel: Stop Playback` | `Ctrl+Shift+S S` | Stop playback in Strudel |
 | `Strudel: Set Active Editor` | - | Change which file is synced to Strudel |
 | `Strudel: Set Active Editor and Update` | `Ctrl+Shift+S X` | Set current editor and trigger update |
+
+### Autocompletion & Documentation
+
+The extension provides intelligent autocompletion for all Strudel functions:
+
+- **Function completion** - Type any part of a function name to see available completions
+- **Parameter snippets** - Functions with parameters include snippet templates for easy completion
+- **Rich documentation** - Hover over any function to see detailed documentation including:
+  - Function description
+  - Parameter types and descriptions  
+  - Code examples
+  - Function synonyms/aliases
+- **621 functions** - Complete coverage of the entire Strudel API
+- **Context-aware** - Only shows completions in JavaScript, Strudel files, or files containing "strudel" in the name
+
+The autocompletion data is automatically extracted from Strudel's JSDoc documentation and optimized for fast loading.
+
+To update the autocompletion data (for extension developers):
+1. Ensure the latest Strudel code is in the `strudel/` directory
+2. Run `cd strudel && npm run jsdoc-json` to generate documentation
+3. Run `npm run generate-completions` to create optimized completion data
 
 ### Configuration
 

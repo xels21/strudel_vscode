@@ -162,8 +162,15 @@
     "languages": [
       {
         "id": "strudel",
-        "aliases": ["Strudel", "strudel"],
-        "extensions": [".str", ".std", ".strudel"],
+        "aliases": [
+          "Strudel",
+          "strudel"
+        ],
+        "extensions": [
+          ".str",
+          ".std",
+          ".strudel"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -183,17 +190,19 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "package": "vsce package",
-    "publish": "vsce publish"
+    "publish": "vsce publish",
+    "generate-completions": "node generateCompletions.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.74.0",
     "@types/node": "16.x",
+    "@types/puppeteer": "^5.4.7",
+    "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
-    "eslint": "^8.28.0",
-    "typescript": "^4.9.4",
     "@vscode/test-electron": "^2.2.0",
-    "@vscode/vsce": "^2.15.0"
+    "@vscode/vsce": "^2.15.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
     "puppeteer": "^22.4.1"

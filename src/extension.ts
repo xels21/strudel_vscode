@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
 import { StrudelController } from './strudelController';
+import { StrudelCompletionProviderOptimized } from './completionProviderOptimized';
+import { StrudelHoverProviderOptimized } from './hoverProviderOptimized';
 
 let strudelController: StrudelController;
+let completionProvider: vscode.Disposable;
+let hoverProvider: vscode.Disposable;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Strudel extension is now active');
@@ -28,8 +32,26 @@ export function activate(context: vscode.ExtensionContext) {
         { scheme: 'file', language: 'strudel' },
         { scheme: 'file', pattern: '**/*.str' },
         { scheme: 'file', pattern: '**/*.std' },
-        { scheme: 'file', pattern: '**/*.strudel' }
+        { scheme: 'file', pattern: '**/*.strudel' },
+        { scheme: 'file', language: 'javascript' }
     ];
+
+    // Register completion provider
+    const strudelCompletionProvider = new StrudelCompletionProviderOptimized();
+    completionProvider = vscode.languages.registerCompletionItemProvider(
+        selector,
+        strudelCompletionProvider,
+        '.', '(', '"', "'", ' ' // trigger on various characters
+    );
+    context.subscriptions.push(completionProvider);
+
+    // Register hover provider
+    const strudelHoverProvider = new StrudelHoverProviderOptimized(strudelCompletionProvider.getDocMap());
+    hoverProvider = vscode.languages.registerHoverProvider(
+        selector,
+        strudelHoverProvider
+    );
+    context.subscriptions.push(hoverProvider);
 
     // Register document change listeners
     context.subscriptions.push(
@@ -81,5 +103,11 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
     if (strudelController) {
         strudelController.dispose();
+    }
+    if (completionProvider) {
+        completionProvider.dispose();
+    }
+    if (hoverProvider) {
+        hoverProvider.dispose();
     }
 }
