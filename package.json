@@ -191,7 +191,9 @@
     "test": "node ./out/test/runTest.js",
     "package": "vsce package",
     "publish": "vsce publish",
-    "generate-completions": "node generateCompletions.js"
+    "generate-completions": "node generateCompletions.js",
+    "generate-hydra-completions": "node generateHydraCompletions.js",
+    "generate-all-completions": "npm run generate-completions && npm run generate-hydra-completions"
   },
   "devDependencies": {
     "@types/node": "16.x",

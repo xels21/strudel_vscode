@@ -1,0 +1,1122 @@
+{
+  "functions": [
+    {
+      "name": "a",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "add",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "b",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "blend",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 0.5
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "brightness",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 0.4
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "color",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "r",
+          "type": "float",
+          "description": "r parameter",
+          "default": 1
+        },
+        {
+          "name": "g",
+          "type": "float",
+          "description": "g parameter",
+          "default": 1
+        },
+        {
+          "name": "b",
+          "type": "float",
+          "description": "b parameter",
+          "default": 1
+        },
+        {
+          "name": "a",
+          "type": "float",
+          "description": "a parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "colorama",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 0.005
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "contrast",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1.6
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "diff",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "g",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "gradient",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "hue",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "hue",
+          "type": "float",
+          "description": "hue parameter",
+          "default": 0.4
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "hush",
+      "description": "Clear all outputs",
+      "type": "utility",
+      "params": [],
+      "examples": [
+        "hush()"
+      ],
+      "category": "hydra"
+    },
+    {
+      "name": "invert",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "kaleid",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "nSides",
+          "type": "float",
+          "description": "nSides parameter",
+          "default": 4
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "layer",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "luma",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "threshold",
+          "type": "float",
+          "description": "threshold parameter",
+          "default": 0.5
+        },
+        {
+          "name": "tolerance",
+          "type": "float",
+          "description": "tolerance parameter",
+          "default": 0.1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "mask",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulate",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 0.1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateHue",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateKaleid",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "nSides",
+          "type": "float",
+          "description": "nSides parameter",
+          "default": 4
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulatePixelate",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "multiple",
+          "type": "float",
+          "description": "multiple parameter",
+          "default": 10
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 3
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateRepeat",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "repeatX",
+          "type": "float",
+          "description": "repeatX parameter",
+          "default": 3
+        },
+        {
+          "name": "repeatY",
+          "type": "float",
+          "description": "repeatY parameter",
+          "default": 3
+        },
+        {
+          "name": "offsetX",
+          "type": "float",
+          "description": "offsetX parameter",
+          "default": 0.5
+        },
+        {
+          "name": "offsetY",
+          "type": "float",
+          "description": "offsetY parameter",
+          "default": 0.5
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateRepeatX",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "reps",
+          "type": "float",
+          "description": "reps parameter",
+          "default": 3
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0.5
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateRepeatY",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "reps",
+          "type": "float",
+          "description": "reps parameter",
+          "default": 3
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0.5
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateRotate",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "multiple",
+          "type": "float",
+          "description": "multiple parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateScale",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "multiple",
+          "type": "float",
+          "description": "multiple parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateScrollX",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "scrollX",
+          "type": "float",
+          "description": "scrollX parameter",
+          "default": 0.5
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "modulateScrollY",
+      "description": "Hydra combineCoord function",
+      "type": "combineCoord",
+      "params": [
+        {
+          "name": "scrollY",
+          "type": "float",
+          "description": "scrollY parameter",
+          "default": 0.5
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "mult",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "noise",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 10
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0.1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "osc",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "frequency",
+          "type": "float",
+          "description": "frequency parameter",
+          "default": 60
+        },
+        {
+          "name": "sync",
+          "type": "float",
+          "description": "sync parameter",
+          "default": 0.1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "out",
+      "description": "Output to buffer (o0, o1, o2, o3)",
+      "type": "output",
+      "params": [
+        {
+          "name": "buffer",
+          "type": "output",
+          "description": "Output buffer (o0, o1, o2, o3)",
+          "default": "o0"
+        }
+      ],
+      "examples": [
+        ".out(o0)",
+        ".out()"
+      ],
+      "category": "hydra"
+    },
+    {
+      "name": "pixelate",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "pixelX",
+          "type": "float",
+          "description": "pixelX parameter",
+          "default": 20
+        },
+        {
+          "name": "pixelY",
+          "type": "float",
+          "description": "pixelY parameter",
+          "default": 20
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "posterize",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "bins",
+          "type": "float",
+          "description": "bins parameter",
+          "default": 3
+        },
+        {
+          "name": "gamma",
+          "type": "float",
+          "description": "gamma parameter",
+          "default": 0.6
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "prev",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "r",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 1
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "render",
+      "description": "Render all outputs",
+      "type": "utility",
+      "params": [],
+      "examples": [
+        "render()"
+      ],
+      "category": "hydra"
+    },
+    {
+      "name": "repeat",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "repeatX",
+          "type": "float",
+          "description": "repeatX parameter",
+          "default": 3
+        },
+        {
+          "name": "repeatY",
+          "type": "float",
+          "description": "repeatY parameter",
+          "default": 3
+        },
+        {
+          "name": "offsetX",
+          "type": "float",
+          "description": "offsetX parameter",
+          "default": 0
+        },
+        {
+          "name": "offsetY",
+          "type": "float",
+          "description": "offsetY parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "repeatX",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "reps",
+          "type": "float",
+          "description": "reps parameter",
+          "default": 3
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "repeatY",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "reps",
+          "type": "float",
+          "description": "reps parameter",
+          "default": 3
+        },
+        {
+          "name": "offset",
+          "type": "float",
+          "description": "offset parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "rotate",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "angle",
+          "type": "float",
+          "description": "angle parameter",
+          "default": 10
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "saturate",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 2
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "scale",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1.5
+        },
+        {
+          "name": "xMult",
+          "type": "float",
+          "description": "xMult parameter",
+          "default": 1
+        },
+        {
+          "name": "yMult",
+          "type": "float",
+          "description": "yMult parameter",
+          "default": 1
+        },
+        {
+          "name": "offsetX",
+          "type": "float",
+          "description": "offsetX parameter",
+          "default": 0.5
+        },
+        {
+          "name": "offsetY",
+          "type": "float",
+          "description": "offsetY parameter",
+          "default": 0.5
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "scroll",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "scrollX",
+          "type": "float",
+          "description": "scrollX parameter",
+          "default": 0.5
+        },
+        {
+          "name": "scrollY",
+          "type": "float",
+          "description": "scrollY parameter",
+          "default": 0.5
+        },
+        {
+          "name": "speedX",
+          "type": "float",
+          "description": "speedX parameter",
+          "default": 0
+        },
+        {
+          "name": "speedY",
+          "type": "float",
+          "description": "speedY parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "scrollX",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "scrollX",
+          "type": "float",
+          "description": "scrollX parameter",
+          "default": 0.5
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "scrollY",
+      "description": "Hydra coord function",
+      "type": "coord",
+      "params": [
+        {
+          "name": "scrollY",
+          "type": "float",
+          "description": "scrollY parameter",
+          "default": 0.5
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "setResolution",
+      "description": "Set canvas resolution",
+      "type": "utility",
+      "params": [
+        {
+          "name": "width",
+          "type": "float",
+          "description": "Width in pixels",
+          "default": 1920
+        },
+        {
+          "name": "height",
+          "type": "float",
+          "description": "Height in pixels",
+          "default": 1080
+        }
+      ],
+      "examples": [
+        "setResolution(1920, 1080)"
+      ],
+      "category": "hydra"
+    },
+    {
+      "name": "shape",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "sides",
+          "type": "float",
+          "description": "sides parameter",
+          "default": 3
+        },
+        {
+          "name": "radius",
+          "type": "float",
+          "description": "radius parameter",
+          "default": 0.3
+        },
+        {
+          "name": "smoothing",
+          "type": "float",
+          "description": "smoothing parameter",
+          "default": 0.01
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "shift",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "r",
+          "type": "float",
+          "description": "r parameter",
+          "default": 0.5
+        },
+        {
+          "name": "g",
+          "type": "float",
+          "description": "g parameter",
+          "default": 0
+        },
+        {
+          "name": "b",
+          "type": "float",
+          "description": "b parameter",
+          "default": 0
+        },
+        {
+          "name": "a",
+          "type": "float",
+          "description": "a parameter",
+          "default": 0
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "solid",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "r",
+          "type": "float",
+          "description": "r parameter",
+          "default": 0
+        },
+        {
+          "name": "g",
+          "type": "float",
+          "description": "g parameter",
+          "default": 0
+        },
+        {
+          "name": "b",
+          "type": "float",
+          "description": "b parameter",
+          "default": 0
+        },
+        {
+          "name": "a",
+          "type": "float",
+          "description": "a parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "src",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "tex",
+          "type": "sampler2D",
+          "description": "tex parameter",
+          "default": null
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "sub",
+      "description": "Hydra combine function",
+      "type": "combine",
+      "params": [
+        {
+          "name": "amount",
+          "type": "float",
+          "description": "amount parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "sum",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "scale",
+          "type": "vec4",
+          "description": "scale parameter",
+          "default": 1
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "thresh",
+      "description": "Hydra color function",
+      "type": "color",
+      "params": [
+        {
+          "name": "threshold",
+          "type": "float",
+          "description": "threshold parameter",
+          "default": 0.5
+        },
+        {
+          "name": "tolerance",
+          "type": "float",
+          "description": "tolerance parameter",
+          "default": 0.04
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    },
+    {
+      "name": "time",
+      "description": "Global time variable",
+      "type": "variable",
+      "params": [],
+      "examples": [
+        "osc(10, 0.1, () => time * 0.1)"
+      ],
+      "category": "hydra"
+    },
+    {
+      "name": "voronoi",
+      "description": "Hydra src function",
+      "type": "src",
+      "params": [
+        {
+          "name": "scale",
+          "type": "float",
+          "description": "scale parameter",
+          "default": 5
+        },
+        {
+          "name": "speed",
+          "type": "float",
+          "description": "speed parameter",
+          "default": 0.3
+        },
+        {
+          "name": "blending",
+          "type": "float",
+          "description": "blending parameter",
+          "default": 0.3
+        }
+      ],
+      "examples": [],
+      "category": "hydra"
+    }
+  ],
+  "lastGenerated": "2025-11-09T21:17:57.468Z"
+}

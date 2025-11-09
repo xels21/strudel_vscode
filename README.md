@@ -9,7 +9,7 @@ This extension launches Strudel in a browser window and provides real-time two-w
 ## Features
 
 - **Real-time sync** - Two-way synchronization between VS Code and Strudel editor
-- **Intelligent autocompletion** - Complete autocompletion for all Strudel functions with documentation
+- **Intelligent autocompletion** - Complete autocompletion for all Strudel and Hydra functions with documentation
 - **Function documentation** - Hover over functions to see detailed documentation, parameters, and examples
 - **Playback control** - Control Strudel's Play/Stop and Update functions directly from VS Code
 - **Side by side workflow** - Maximized Strudel menu panel and (optionally) hidden top bar for seamless workflow
@@ -53,24 +53,34 @@ This extension launches Strudel in a browser window and provides real-time two-w
 
 ### Autocompletion & Documentation
 
-The extension provides intelligent autocompletion for all Strudel functions:
+The extension provides intelligent autocompletion for both Strudel and Hydra functions:
 
-- **Function completion** - Type any part of a function name to see available completions
-- **Parameter snippets** - Functions with parameters include snippet templates for easy completion
-- **Rich documentation** - Hover over any function to see detailed documentation including:
-  - Function description
-  - Parameter types and descriptions  
-  - Code examples
-  - Function synonyms/aliases
-- **621 functions** - Complete coverage of the entire Strudel API
-- **Context-aware** - Only shows completions in JavaScript, Strudel files, or files containing "strudel" in the name
+#### 🌀 Strudel Functions (621 functions)
+- **Pattern creation**: `note()`, `sound()`, `sequence()`, `stack()`, etc.
+- **Pattern transformations**: `fast()`, `slow()`, `rev()`, `jux()`, etc.
+- **Audio effects**: `gain()`, `delay()`, `reverb()`, `lpf()`, etc.
+- **Scales & harmony**: `scale()`, `chord()`, `voicing()`, etc.
 
-The autocompletion data is automatically extracted from Strudel's JSDoc documentation and optimized for fast loading.
+#### 🌊 Hydra Functions (57 functions)
+- **Sources**: `osc()`, `noise()`, `gradient()`, `shape()`, `voronoi()`
+- **Color**: `brightness()`, `contrast()`, `saturate()`, `colorama()`
+- **Geometry**: `rotate()`, `scale()`, `repeat()`, `kaleid()`, `scroll()`
+- **Blending**: `mult()`, `add()`, `sub()`, `blend()`, `diff()`
+- **Output**: `out()`, `render()`, `hush()`
+
+#### ✨ Smart Features
+- **Context-aware completion** - Shows Strudel functions when working with musical patterns, Hydra functions when working with visuals
+- **Parameter snippets** - Functions include snippet templates with parameter placeholders
+- **Rich hover documentation** - Detailed docs with parameter types, defaults, and examples
+- **Visual badges** - 🌀 for Strudel functions, 🌊 for Hydra functions
+- **File context detection** - Automatically detects Strudel (.str, .std) and Hydra files
+
+The autocompletion data is automatically extracted from both Strudel's JSDoc documentation and Hydra's function definitions.
 
 To update the autocompletion data (for extension developers):
 1. Ensure the latest Strudel code is in the `strudel/` directory
-2. Run `cd strudel && npm run jsdoc-json` to generate documentation
-3. Run `npm run generate-completions` to create optimized completion data
+2. Ensure Hydra dependencies are installed in `hydra/` directory  
+3. Run `npm run generate-all-completions` to update both completion datasets
 
 ### Configuration
 

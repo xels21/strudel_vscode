@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { StrudelController } from './strudelController';
-import { StrudelCompletionProviderOptimized } from './completionProviderOptimized';
-import { StrudelHoverProviderOptimized } from './hoverProviderOptimized';
+import { CombinedCompletionProvider } from './combinedCompletionProvider';
+import { CombinedHoverProvider } from './combinedHoverProvider';
 
 let strudelController: StrudelController;
 let completionProvider: vscode.Disposable;
@@ -37,19 +37,19 @@ export function activate(context: vscode.ExtensionContext) {
     ];
 
     // Register completion provider
-    const strudelCompletionProvider = new StrudelCompletionProviderOptimized();
+    const combinedCompletionProvider = new CombinedCompletionProvider();
     completionProvider = vscode.languages.registerCompletionItemProvider(
         selector,
-        strudelCompletionProvider,
+        combinedCompletionProvider,
         '.', '(', '"', "'", ' ' // trigger on various characters
     );
     context.subscriptions.push(completionProvider);
 
     // Register hover provider
-    const strudelHoverProvider = new StrudelHoverProviderOptimized(strudelCompletionProvider.getDocMap());
+    const combinedHoverProvider = new CombinedHoverProvider(combinedCompletionProvider.getDocMap());
     hoverProvider = vscode.languages.registerHoverProvider(
         selector,
-        strudelHoverProvider
+        combinedHoverProvider
     );
     context.subscriptions.push(hoverProvider);
 
