@@ -4,6 +4,9 @@
   "scopeName": "source.js.strudel",
   "patterns": [
     {
+      "include": "#strudel-comments"
+    },
+    {
       "include": "#strudel-functions"
     },
     {
@@ -23,6 +26,30 @@
     }
   ],
   "repository": {
+    "strudel-comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.strudel",
+          "begin": "//",
+          "end": "$",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.strudel"
+            }
+          }
+        },
+        {
+          "name": "comment.block.strudel",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.strudel"
+            }
+          }
+        }
+      ]
+    },
     "strudel-functions": {
       "patterns": [
         {

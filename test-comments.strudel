@@ -1,0 +1,33 @@
+// This is a single-line comment in Strudel
+sound("bd hh sn oh").fast(2).gain(0.8)
+
+/*
+This is a 
+multi-line comment
+in Strudel
+*/
+
+stack(
+  note("C3 E3 G3 C4")
+    .scale("C:major") // Another single-line comment
+    .sound("piano")
+    .slow(4),
+  
+  /* Inline block comment */ sound("bass").n("0 2 4 5")
+)
+
+// More complex patterns with comments
+const melody = sequence("C4 D4 E4 F4")
+  .scale("C:dorian") // Using dorian mode
+  .transpose(octave(2))
+
+/*
+Effects chain:
+- gain: volume control
+- lpf: low-pass filter
+- delay: echo effect
+*/
+melody
+  .gain(0.6) // Set volume to 60%
+  .lpf(2000) // Filter frequencies above 2kHz
+  .delay(0.25) // Add quarter-note delay
