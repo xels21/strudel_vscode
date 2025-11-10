@@ -67,6 +67,12 @@
         "title": "Eval the document with hydra",
         "category": "Hydra",
         "icon": "$(play)"
+      },
+      {
+        "command": "strudel.launchFromEditor",
+        "title": "Launch Strudel for this file",
+        "category": "Strudel",
+        "icon": "$(play)"
       }
     ],
     "keybindings": [
@@ -106,6 +112,11 @@
         {
           "command": "hydra.evalDocument",
           "when": "resourceExtname == .hydra",
+          "group": "navigation"
+        },
+        {
+          "command": "strudel.launchFromEditor",
+          "when": "resourceExtname == .str || resourceExtname == .std || resourceExtname == .strudel",
           "group": "navigation"
         }
       ]

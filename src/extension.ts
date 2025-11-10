@@ -27,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('strudel.stop', () => strudelController.stop()),
         vscode.commands.registerCommand('strudel.setActiveEditor', () => strudelController.setActiveEditor()),
         vscode.commands.registerCommand('strudel.execute', () => strudelController.execute()),
+        vscode.commands.registerCommand('strudel.launchFromEditor', () => strudelController.launch()),
         vscode.commands.registerCommand('hydra.evalDocument', () => hydraController.evalDocument())
     ];
 
