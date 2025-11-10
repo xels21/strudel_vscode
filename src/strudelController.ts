@@ -243,7 +243,7 @@ export class StrudelController {
             return;
         }
 
-        const content = this.activeDocument.getText();
+        const content = this.activeDocument.getText().replace(/\r\n/g, '\n');
         this.browser.sendContent(content);
 
         // Send cursor position after content
