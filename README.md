@@ -17,6 +17,7 @@ This extension launches Strudel in a browser window and provides real-time two-w
 - **Two-way cursor sync** - The cursor position is synchronized in real-time between VS Code and Strudel
 - **Swap files** - Change the file that is synced to Strudel with the "Set Active Editor" command
 - **Enhanced syntax highlighting** - Color-coded syntax highlighting for Strudel functions, effects, musical notation, and Hydra visual functions
+- **Full comment support** - Single-line (`//`) and multi-line (`/* */`) comments with proper highlighting and VS Code integration
 - **Hydra support** - Live code stunning visuals directly from VS Code with automatic execution
 - **Editor action icons** - One-click execution with play button icon in Hydra file editor toolbar
 - **Dual environment** - Seamlessly switch between Strudel (music) and Hydra (visuals)

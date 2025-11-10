@@ -1,33 +1,72 @@
-// This is a single-line comment in Strudel
-sound("bd hh sn oh").fast(2).gain(0.8)
+// =================
+// Strudel Comment Test File
+// =================
 
 /*
-This is a 
-multi-line comment
-in Strudel
+This file demonstrates comment support in Strudel files:
+- Single-line comments with //
+- Multi-line comments with /* */
+- Inline comments
+- Code documentation
+- Temporary code disabling
 */
 
-stack(
-  note("C3 E3 G3 C4")
-    .scale("C:major") // Another single-line comment
-    .sound("piano")
-    .slow(4),
-  
-  /* Inline block comment */ sound("bass").n("0 2 4 5")
+// Main groove pattern
+const groove = stack(
+  sound("bd").n("0 ~ 0 ~"), // Kick on beats 1 and 3
+  sound("sn").n("~ 0 ~ 0"), // Snare on beats 2 and 4
+  sound("hh").n("0 0 0 0").gain(0.3) // Hi-hats every beat
 )
 
-// More complex patterns with comments
-const melody = sequence("C4 D4 E4 F4")
-  .scale("C:dorian") // Using dorian mode
-  .transpose(octave(2))
+/*
+Effects chain explanation:
+1. Low-pass filter for warmth
+2. Reverb for spatial depth  
+3. Slight delay for groove enhancement
+*/
+groove
+  .lpf(1200) // Remove harsh frequencies
+  .reverb(0.2) // Add space
+  .delay(0.125) // Sixteenth note delay
+
+// Melody section
+const melody = note("C4 D4 E4 F4 G4 A4 B4 C5")
+  .scale("C:major") // Use C major scale
+  .sound("piano")
+  .slow(4) // Play 4 times slower
 
 /*
-Effects chain:
-- gain: volume control
-- lpf: low-pass filter
-- delay: echo effect
+// Alternative melody - commented out for now
+const melody2 = note("0 2 4 7")
+  .scale("A:minor")
+  .sound("synth")
+  .fast(2)
 */
-melody
-  .gain(0.6) // Set volume to 60%
-  .lpf(2000) // Filter frequencies above 2kHz
-  .delay(0.25) // Add quarter-note delay
+
+// Bassline with detailed comments
+const bass = note("C2 F2 G2 C3") // Root progression
+  .sound("bass")
+  .gain(0.8) // Moderate volume
+  .lpf(800) // Filter for sub-bass feel
+
+// TODO: Add more percussion elements
+// FIXME: Timing needs adjustment in live performance
+// NOTE: This pattern works best at 120-140 BPM
+
+/*
+Performance notes:
+- Start with just the groove
+- Add melody after 8 bars
+- Bring in bass on the chorus
+- Use live effects for transitions
+*/
+
+// Final mix
+stack(
+  groove, // Main rhythm
+  melody.slow(2), // Slow melody
+  // bass.sometimes(rev), // Bass with occasional reverse (disabled)
+  sound("pad").n("Cm7").slow(8).gain(0.2) // Subtle pad
+)
+
+// End of composition
