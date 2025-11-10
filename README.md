@@ -16,8 +16,10 @@ This extension launches Strudel in a browser window and provides real-time two-w
 - **File based** - Save your files as `*.str` or `*.std` and open them right away in Strudel through VS Code
 - **Two-way cursor sync** - The cursor position is synchronized in real-time between VS Code and Strudel
 - **Swap files** - Change the file that is synced to Strudel with the "Set Active Editor" command
-- **File type support** - The extension automatically provides syntax highlighting for `.str` and `.std` files
-- **Hydra support** - Live code stunning visuals directly from VS Code
+- **Enhanced syntax highlighting** - Color-coded syntax highlighting for Strudel functions, effects, musical notation, and Hydra visual functions
+- **Hydra support** - Live code stunning visuals directly from VS Code with automatic execution
+- **Editor action icons** - One-click execution with play button icon in Hydra file editor toolbar
+- **Dual environment** - Seamlessly switch between Strudel (music) and Hydra (visuals)
 - **Error reporting** - Reports Strudel evaluation errors back into VS Code
 - **Custom CSS injection** - Optionally inject custom CSS into the Strudel web editor
 - **Auto update** - Optionally trigger Strudel Update when saving files
@@ -34,10 +36,18 @@ This extension launches Strudel in a browser window and provides real-time two-w
 
 ### Basic Workflow
 
+#### For Strudel (Music)
 1. **Launch Strudel** - Open a `.str` file or any JavaScript file and run `Strudel: Launch Strudel` from the command palette
 2. **Start Coding** - The Strudel editor will open in your browser. Any changes you make in VS Code will be automatically synced to Strudel (and vice versa)
 3. **Control Playback** - Use `Strudel: Toggle Play/Stop` to start/stop playback, and `Strudel: Update/Evaluate Code` to update your code
 4. **Exit Session** - Run `Strudel: Quit Strudel` or close your browser/VS Code when done
+
+#### For Hydra (Visuals)
+1. **Open Hydra file** - Create or open a `.hydra` file - this automatically activates Hydra mode
+2. **One-click execution** - Click the ▶️ play icon in the editor toolbar for instant execution
+3. **Auto-execution** - The code is automatically evaluated when you open the file and every time you save
+4. **Manual execution** - Run `Hydra: Eval the document with hydra` command for manual evaluation
+5. **Visual output** - A Hydra panel opens beside your editor showing live visual output
 
 ### Commands
 
@@ -50,6 +60,7 @@ This extension launches Strudel in a browser window and provides real-time two-w
 | `Strudel: Stop Playback` | `Ctrl+Shift+S S` | Stop playback in Strudel |
 | `Strudel: Set Active Editor` | - | Change which file is synced to Strudel |
 | `Strudel: Set Active Editor and Update` | `Ctrl+Shift+S X` | Set current editor and trigger update |
+| `Hydra: Eval the document with hydra` | - | Execute Hydra code and display visuals |
 
 ### Autocompletion & Documentation
 
@@ -108,8 +119,19 @@ The extension provides extensive configuration options in VS Code settings:
 
 The extension automatically recognizes:
 - `.str` files (Strudel files)
-- `.std` files (Strudel files)
-- JavaScript files (when working with Strudel code)
+- `.std` files (Strudel files) 
+- `.strudel` files (Strudel files)
+- `.hydra` files (Hydra files) - automatically activates Hydra mode
+- JavaScript files (when working with Strudel or Hydra code)
+
+### Hydra Integration
+
+When working with `.hydra` files:
+- **Auto-activation**: Opening a `.hydra` file automatically activates Hydra mode
+- **Auto-execution**: Code is evaluated when file is opened and on every save
+- **Live visuals**: A webview panel opens showing real-time Hydra output
+- **Autocompletion**: Full autocompletion for all 57 Hydra functions
+- **Error handling**: Execution errors are shown in the console
 
 ## How It Works
 

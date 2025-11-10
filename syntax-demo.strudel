@@ -1,0 +1,53 @@
+// Strudel Syntax Highlighting Demo
+// This file demonstrates the enhanced syntax highlighting for Strudel
+
+// Core pattern functions with highlighting
+stack(
+  sound("bd hh sn oh").fast(2).gain(0.8),
+  note("C3 E3 G3 C4")
+    .scale("C:major")
+    .sound("piano")
+    .slow(4)
+)
+
+// Musical functions highlighted in blue/purple
+const melody = sequence("C4 D4 E4 F4")
+  .scale("C:dorian")
+  .transpose(octave(2))
+  .chord("m7")
+
+// Effect functions in green
+melody
+  .gain(0.6)
+  .lpf(2000)
+  .delay(0.25)
+  .reverb(0.3)
+  .pan(sine.range(0, 1))
+
+// Pattern manipulation functions in orange
+const rhythm = "x . x . [x x] . x ."
+  .fast(2)
+  .sometimes(rev)
+  .every(4, slow(2))
+  .jux(rev2)
+  .striate(3)
+
+// Time-based functions in cyan
+const bassDrum = sound("bd")
+  .speed(2)
+  .hurry(2)
+  .compress(1/4, 3/4)
+  .early(1/8)
+
+// Numbers and notes highlighted
+const progression = sequence("C3 F3 G3 Am3")
+  .slow(8)
+  .voicing("top4")
+  .gain(0.7)
+  .pan(0.5)
+
+// Strudel-specific operators and patterns
+fastcat(sound("bd"), silence, sound("hh"))
+  .stack(note("C2").sound("bass"))
+  .euclidean(3, 8)
+  .struct("1 0 1 1 0 1 0 1")

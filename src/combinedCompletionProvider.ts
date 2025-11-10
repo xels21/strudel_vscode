@@ -73,10 +73,7 @@ export class CombinedCompletionProvider implements vscode.CompletionItemProvider
             item.filterText = func.name;
             item.sortText = `${category === 'strudel' ? 'a' : 'b'}_${func.name}`; // Prioritize Strudel functions
 
-            // Add category tag  
-            if (category === 'hydra') {
-                item.tags = [vscode.CompletionItemTag.Deprecated]; // Use as visual indicator
-            }
+            // Don't add deprecated tag - we use badges in documentation instead
 
             this.completionItems.push(item);
         }

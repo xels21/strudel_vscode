@@ -21,6 +21,7 @@
   ],
   "activationEvents": [
     "onLanguage:javascript",
+    "onLanguage:hydra",
     "onCommand:strudel.launch"
   ],
   "main": "./out/extension.js",
@@ -60,6 +61,12 @@
         "command": "strudel.execute",
         "title": "Set Active Editor and Update",
         "category": "Strudel"
+      },
+      {
+        "command": "hydra.evalDocument",
+        "title": "Eval the document with hydra",
+        "category": "Hydra",
+        "icon": "$(play)"
       }
     ],
     "keybindings": [
@@ -94,6 +101,15 @@
         "mac": "cmd+shift+s x"
       }
     ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "hydra.evalDocument",
+          "when": "resourceExtname == .hydra",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Strudel",
       "properties": {
@@ -172,6 +188,17 @@
           ".strudel"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "hydra",
+        "aliases": [
+          "Hydra",
+          "hydra"
+        ],
+        "extensions": [
+          ".hydra"
+        ],
+        "configuration": "./hydra-language-configuration.json"
       }
     ],
     "grammars": [
@@ -179,6 +206,11 @@
         "language": "strudel",
         "scopeName": "source.js.strudel",
         "path": "./syntaxes/strudel.tmLanguage.json"
+      },
+      {
+        "language": "hydra",
+        "scopeName": "source.js.hydra",
+        "path": "./syntaxes/hydra.tmLanguage.json"
       }
     ]
   },
@@ -207,6 +239,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "hydra-synth": "^1.4.0",
     "puppeteer": "^22.4.1"
   },
   "repository": {

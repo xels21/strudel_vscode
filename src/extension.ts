@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import { StrudelController } from './strudelController';
+import { HydraController } from './hydraController';
 import { CombinedCompletionProvider } from './combinedCompletionProvider';
 import { CombinedHoverProvider } from './combinedHoverProvider';
 
 let strudelController: StrudelController;
+let hydraController: HydraController;
 let completionProvider: vscode.Disposable;
 let hoverProvider: vscode.Disposable;
 
@@ -13,6 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
     // Initialize the Strudel controller
     strudelController = new StrudelController(context);
 
+    // Initialize the Hydra controller
+    hydraController = new HydraController(context);
+
     // Register all commands
     const commands = [
         vscode.commands.registerCommand('strudel.launch', () => strudelController.launch()),
@@ -21,7 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('strudel.update', () => strudelController.update()),
         vscode.commands.registerCommand('strudel.stop', () => strudelController.stop()),
         vscode.commands.registerCommand('strudel.setActiveEditor', () => strudelController.setActiveEditor()),
-        vscode.commands.registerCommand('strudel.execute', () => strudelController.execute())
+        vscode.commands.registerCommand('strudel.execute', () => strudelController.execute()),
+        vscode.commands.registerCommand('hydra.evalDocument', () => hydraController.evalDocument())
     ];
 
     // Add commands to subscription so they are disposed when extension is deactivated
@@ -33,7 +39,9 @@ export function activate(context: vscode.ExtensionContext) {
         { scheme: 'file', pattern: '**/*.str' },
         { scheme: 'file', pattern: '**/*.std' },
         { scheme: 'file', pattern: '**/*.strudel' },
-        { scheme: 'file', language: 'javascript' }
+        { scheme: 'file', language: 'javascript' },
+        { scheme: 'file', language: 'hydra' },
+        { scheme: 'file', pattern: '**/*.hydra' }
     ];
 
     // Register completion provider
@@ -103,6 +111,9 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
     if (strudelController) {
         strudelController.dispose();
+    }
+    if (hydraController) {
+        hydraController.dispose();
     }
     if (completionProvider) {
         completionProvider.dispose();

@@ -1,0 +1,30 @@
+// Test Hydra file - save this as test.hydra
+// When you open this file, it should automatically activate Hydra mode
+// When you save this file, it should execute the code in Hydra
+
+// Basic oscillator
+osc(10, 0.1, 0.8)
+  .color(0.9, 0.7, 0.8)
+  .rotate(0, 0.1)
+  .out(o0)
+
+// Noise pattern
+noise(2, 0.1)
+  .mult(
+    gradient()
+      .rotate(() => time * 0.1)
+  )
+  .out(o1)
+
+// Kaleidoscope effect
+osc(20, 0.1, 1.2)
+  .kaleid(4)
+  .scale(0.5)
+  .out(o2)
+
+// Shape with color manipulation
+shape(4, 0.3, 0.01)
+  .repeat(3, 3)
+  .color(1, 0.5, 0.8)
+  .scrollY(0, 0.1)
+  .out(o3)

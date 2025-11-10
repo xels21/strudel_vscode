@@ -1,0 +1,104 @@
+// Hydra Syntax Highlighting Demo
+// This file demonstrates the enhanced syntax highlighting for Hydra
+
+// Source functions highlighted in purple
+osc(10, 0.1, 0.8)
+  .color(0.9, 0.7, 0.8)
+  .out(o0)
+
+// Noise and gradient sources
+noise(2, 0.1)
+  .mult(
+    gradient()
+      .rotate(() => time * 0.1)
+  )
+  .out(o1)
+
+// Shape and voronoi patterns
+shape(4, 0.3, 0.01)
+  .repeat(3, 3)
+  .scrollY(0, 0.1)
+
+voronoi(5, 0.3, 0.2)
+  .kaleid(6)
+  .scale(0.8)
+
+// Geometry functions in blue
+osc(20, 0.1, 1.2)
+  .rotate(0.5, 0.1)
+  .scale(0.7)
+  .repeatX(3)
+  .repeatY(2)
+  .pixelate(10, 10)
+  .posterize(4)
+  .out(o2)
+
+// Color manipulation in green  
+solid(1, 0, 0.5)
+  .brightness(0.8)
+  .contrast(1.2)
+  .saturate(1.5)
+  .colorama(0.3)
+  .invert(0.5)
+  .thresh(0.4)
+
+// Blend functions in orange
+osc(8, 0.1, 1.5)
+  .mult(
+    noise(3, 0.1)
+      .brightness(0.4)
+  )
+  .add(
+    gradient()
+      .rotate(() => time * 0.05)
+  )
+  .diff(
+    shape(3)
+      .repeat(2, 2)
+  )
+
+// Modulate functions in cyan
+osc(10, 0.1, 1.2)
+  .modulate(
+    noise(4, 0.1),
+    0.1
+  )
+  .modulateScale(
+    osc(8).rotate(0, 0.1),
+    0.5
+  )
+  .modulateKaleid(
+    voronoi(5, 0.3),
+    2
+  )
+
+// Output buffers highlighted as variables
+osc(15, 0.1, 0.8)
+  .out(o0)
+
+gradient()
+  .out(o1)
+
+src(s0)
+  .layer(src(s1))
+  .out(o2)
+
+// Control functions and time variables
+speed = 1.5
+bpm = 120
+
+osc(20, 0.1, 1.0)
+  .rotate(() => time * 0.2)
+  .scale(() => 1 + 0.1 * Math.sin(time))
+  .brightness(() => 0.5 + 0.2 * mouse.x)
+  .out(o3)
+
+// Render the scene
+render()
+
+// Array functions and math
+osc([10, 20, 30].fast(0.5), 0.1, 0.8)
+  .rotate([0, 0.5, 1].smooth())
+  .scale([0.5, 1, 1.5].fit(1, 4))
+  .color([1, 0.5, 0].offset(0.1))
+  .out(o0)

@@ -4,8 +4,126 @@
   "scopeName": "source.js.strudel",
   "patterns": [
     {
+      "include": "#strudel-functions"
+    },
+    {
+      "include": "#strudel-patterns"
+    },
+    {
+      "include": "#strudel-operators"
+    },
+    {
+      "include": "#strudel-notes"
+    },
+    {
+      "include": "#strudel-numbers"
+    },
+    {
       "include": "source.js"
     }
   ],
-  "repository": {}
+  "repository": {
+    "strudel-functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.strudel.core",
+          "match": "\\b(sound|note|s|n|stack|slowcat|fastcat|sequence|seq|cat|pure|silence|struct|euclidean)\\b"
+        },
+        {
+          "name": "entity.name.function.strudel.pattern",
+          "match": "\\b(slow|fast|speed|early|late|jux|rev|rev2|palindrome|iter|ply|striate|chop|slice|splice|loopAt|fit|whenmod|every|sometimes|often|rarely|almostNever|almostAlways|never|always)\\b"
+        },
+        {
+          "name": "entity.name.function.strudel.effects",
+          "match": "\\b(gain|pan|delay|delaytime|delayfeedback|reverb|room|size|lpf|hpf|bpf|lpq|hpq|bpq|cutoff|resonance|vowel|shape|crush|coarse|djf|bandf|bandq|ring|distort|triode|krush|kcutoff|octer|octersub|octsubsub|djfilter|waveloss|squiz|freq|midinote)\\b"
+        },
+        {
+          "name": "entity.name.function.strudel.musical",
+          "match": "\\b(scale|chord|voicing|mode|key|progression|transpose|octave|semitones|cents|bend|pitchbend|tuning|just|equal)\\b"
+        },
+        {
+          "name": "entity.name.function.strudel.time",
+          "match": "\\b(cpm|bpm|segment|compress|expand|stretch|hurry|linger|swing|ghost|off|within|outside|density|sparse|inside|inhabit)\\b"
+        }
+      ]
+    },
+    "strudel-patterns": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.strudel.pattern",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.strudel",
+              "match": "\\\\."
+            },
+            {
+              "name": "constant.numeric.strudel.pattern",
+              "match": "\\b\\d+\\b"
+            },
+            {
+              "name": "keyword.operator.strudel.pattern",
+              "match": "[\\[\\]\\(\\)\\*\\+\\-\\/\\%\\<\\>\\=\\!\\~\\|\\&\\^]"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.strudel.pattern",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.strudel",
+              "match": "\\\\."
+            },
+            {
+              "name": "constant.numeric.strudel.pattern",
+              "match": "\\b\\d+\\b"
+            },
+            {
+              "name": "keyword.operator.strudel.pattern",
+              "match": "[\\[\\]\\(\\)\\*\\+\\-\\/\\%\\<\\>\\=\\!\\~\\|\\&\\^]"
+            }
+          ]
+        }
+      ]
+    },
+    "strudel-operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.strudel.pipe",
+          "match": "\\|"
+        },
+        {
+          "name": "keyword.operator.strudel.stack",
+          "match": ","
+        },
+        {
+          "name": "keyword.operator.strudel.pattern",
+          "match": "[\\[\\]\\<\\>\\*\\+\\-\\/\\%\\@\\#\\~]"
+        }
+      ]
+    },
+    "strudel-notes": {
+      "patterns": [
+        {
+          "name": "constant.language.strudel.note",
+          "match": "\\b[A-Ga-g][#b]?[0-9]*\\b"
+        },
+        {
+          "name": "constant.language.strudel.chord",
+          "match": "\\b[A-Ga-g][#b]?[0-9]*(maj|min|m|dim|aug|sus2|sus4|add9|maj7|min7|dom7|7|9|11|13)\\b"
+        }
+      ]
+    },
+    "strudel-numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.strudel",
+          "match": "\\b\\d+(\\.\\d+)?\\b"
+        }
+      ]
+    }
+  }
 }

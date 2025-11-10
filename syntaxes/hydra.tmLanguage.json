@@ -1,0 +1,119 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Hydra",
+  "scopeName": "source.js.hydra",
+  "patterns": [
+    {
+      "include": "#hydra-sources"
+    },
+    {
+      "include": "#hydra-geometry"
+    },
+    {
+      "include": "#hydra-color"
+    },
+    {
+      "include": "#hydra-blend"
+    },
+    {
+      "include": "#hydra-modulate"
+    },
+    {
+      "include": "#hydra-output"
+    },
+    {
+      "include": "#hydra-control"
+    },
+    {
+      "include": "#hydra-arrays"
+    },
+    {
+      "include": "#hydra-functions"
+    },
+    {
+      "include": "source.js"
+    }
+  ],
+  "repository": {
+    "hydra-sources": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.source",
+          "match": "\\b(osc|noise|voronoi|shape|gradient|src|solid)\\b"
+        }
+      ]
+    },
+    "hydra-geometry": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.geometry",
+          "match": "\\b(rotate|scale|repeat|repeatX|repeatY|kaleid|scroll|scrollX|scrollY|pixelate|posterize|shift|mask)\\b"
+        }
+      ]
+    },
+    "hydra-color": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.color",
+          "match": "\\b(brightness|contrast|color|colorama|sum|r|g|b|a|saturate|desaturate|invert|luma|thresh|posterize)\\b"
+        }
+      ]
+    },
+    "hydra-blend": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.blend",
+          "match": "\\b(add|sub|layer|blend|mult|diff|mask)\\b"
+        }
+      ]
+    },
+    "hydra-modulate": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.modulate",
+          "match": "\\b(modulate|modulateRepeat|modulateRepeatX|modulateRepeatY|modulateKaleid|modulateScrollX|modulateScrollY|modHue|modulateScale|modulatePixelate|modulateRotate)\\b"
+        }
+      ]
+    },
+    "hydra-output": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.output",
+          "match": "\\b(out|render)\\b"
+        },
+        {
+          "name": "variable.language.hydra.buffer",
+          "match": "\\b(o0|o1|o2|o3|s0|s1|s2|s3)\\b"
+        }
+      ]
+    },
+    "hydra-control": {
+      "patterns": [
+        {
+          "name": "entity.name.function.hydra.control",
+          "match": "\\b(speed|bpm|setResolution|hush|setFunction|update)\\b"
+        },
+        {
+          "name": "variable.language.hydra.time",
+          "match": "\\b(time|mouse|audio)\\b"
+        }
+      ]
+    },
+    "hydra-arrays": {
+      "patterns": [
+        {
+          "name": "support.function.hydra.array",
+          "match": "\\b(fast|smooth|fit|offset|ease)\\b"
+        }
+      ]
+    },
+    "hydra-functions": {
+      "patterns": [
+        {
+          "name": "support.function.hydra.math",
+          "match": "\\b(sin|cos|tan|PI|wave|saw|tri|square|noise)\\b"
+        }
+      ]
+    }
+  }
+}
