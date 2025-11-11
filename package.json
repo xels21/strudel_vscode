@@ -223,7 +223,15 @@
         "scopeName": "source.js.hydra",
         "path": "./syntaxes/hydra.tmLanguage.json"
       }
-    ]
+    ],
+    "configurationDefaults": {
+      "files.associations": {
+        "*.str": "javascript",
+        "*.std": "javascript",
+        "*.strudel": "javascript",
+        "*.hydra": "javascript"
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
