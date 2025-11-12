@@ -63,7 +63,7 @@ export class StrudelBrowser {
     async launch(): Promise<void> {
         try {
             // Setup browser launch options
-            const launchOptions: puppeteer.PuppeteerLaunchOptions = {
+            const launchOptions: puppeteer.LaunchOptions = {
                 headless: this.config.headless,
                 defaultViewport: null,
                 ignoreDefaultArgs: [
