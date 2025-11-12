@@ -4,6 +4,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 
+// ============================================================================
+// Configuration Interface
+// ============================================================================
+
 export interface StrudelConfig {
     ui: {
         maximizeMenuPanel: boolean;
@@ -21,25 +25,41 @@ export interface StrudelConfig {
     browserExecutablePath: string;
 }
 
+// ============================================================================
+// Event Handlers Interface
+// ============================================================================
+
+interface EventHandlers {
+    onReady?: () => void;
+    onContentChanged?: (content: string) => void;
+    onCursorChanged?: (position: { row: number; col: number }) => void;
+    onEvalError?: (error: string) => void;
+    onClosed?: () => void;
+}
+
+// ============================================================================
+// StrudelBrowser Class
+// ============================================================================
+
 export class StrudelBrowser {
+    // Browser state
     private browser: puppeteer.Browser | null = null;
     private page: puppeteer.Page | null = null;
     private isReady = false;
-    private lastContent: string = '';
-    private eventHandlers: {
-        onReady?: () => void;
-        onContentChanged?: (content: string) => void;
-        onCursorChanged?: (position: { row: number; col: number }) => void;
-        onEvalError?: (error: string) => void;
-        onClosed?: () => void;
-    } = {};
+    private lastContent = '';
+    
+    // Event handlers
+    private eventHandlers: EventHandlers = {};
 
     constructor(
         private config: StrudelConfig,
         private context: vscode.ExtensionContext
     ) {}
 
-    // Event handler setters
+    // ========================================================================
+    // Public API - Event Handler Registration
+    // ========================================================================
+
     onReady(handler: () => void): void {
         this.eventHandlers.onReady = handler;
     }
@@ -60,79 +80,33 @@ export class StrudelBrowser {
         this.eventHandlers.onClosed = handler;
     }
 
+    // ========================================================================
+    // Public API - Browser Control
+    // ========================================================================
+
+    // ========================================================================
+    // Public API - Browser Control
+    // ========================================================================
+
+    /**
+     * Launch the Strudel browser instance
+     */
     async launch(): Promise<void> {
         try {
-            // Setup browser launch options
-            const launchOptions: puppeteer.LaunchOptions = {
-                headless: this.config.headless,
-                defaultViewport: null,
-                ignoreDefaultArgs: [
-                    '--mute-audio',
-                    '--enable-automation',
-                ],
-                args: [
-                    '--app=https://strudel.cc',
-                    '--autoplay-policy=no-user-gesture-required',
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                ],
-            };
-
-            // Set user data directory
-            if (this.config.browserDataDir) {
-                launchOptions.userDataDir = this.config.browserDataDir;
-            } else {
-                launchOptions.userDataDir = path.join(os.homedir(), '.cache', 'strudel-vscode');
-            }
-
-            // Set custom browser executable
-            if (this.config.browserExecutablePath) {
-                launchOptions.executablePath = this.config.browserExecutablePath;
-            }
-
-            // Launch browser
-            this.browser = await puppeteer.launch(launchOptions);
-
-            // Get the first page (app page)
-            const pages = await this.browser.pages();
-            this.page = pages[0];
-
-            // Wait for Strudel to load
-            await this.page.waitForSelector('.cm-content', { timeout: 30000 });
-
-            // Setup event handlers
-            this.browser.on('disconnected', () => {
-                this.cleanup();
-                this.eventHandlers.onClosed?.();
-            });
-
-            this.page.on('close', () => {
-                this.cleanup();
-                this.eventHandlers.onClosed?.();
-            });
-
-            // Apply custom styling
-            await this.applyCustomStyling();
-
-            // Setup content synchronization
-            await this.setupContentSync();
-
-            // Setup error monitoring
-            await this.setupErrorMonitoring();
-
-            // Setup cursor synchronization
-            if (this.config.syncCursor) {
-                await this.setupCursorSync();
-            }
-
+            await this.launchBrowser();
+            await this.setupBrowserPage();
+            await this.initializeStrudel();
+            
             this.isReady = true;
             this.eventHandlers.onReady?.();
-
         } catch (error) {
             throw new Error(`Failed to launch browser: ${error}`);
         }
     }
 
+    /**
+     * Quit and cleanup the browser instance
+     */
     async quit(): Promise<void> {
         if (this.browser) {
             await this.browser.close();
@@ -140,22 +114,34 @@ export class StrudelBrowser {
         }
     }
 
+    /**
+     * Toggle play/pause in Strudel
+     */
     async toggle(): Promise<void> {
         if (!this.page) return;
+        
         await this.page.evaluate(() => {
             (window as any).strudelMirror.toggle();
         });
     }
 
+    /**
+     * Evaluate/update the current code
+     */
     async update(): Promise<void> {
         if (!this.page) return;
+        
         await this.page.evaluate(() => {
             (window as any).strudelMirror.evaluate();
         });
     }
 
+    /**
+     * Refresh and re-evaluate if already playing
+     */
     async refresh(): Promise<void> {
         if (!this.page) return;
+        
         await this.page.evaluate(() => {
             if ((window as any).strudelMirror.repl.state.started) {
                 (window as any).strudelMirror.evaluate();
@@ -163,110 +149,248 @@ export class StrudelBrowser {
         });
     }
 
+    /**
+     * Stop playback
+     */
     async stop(): Promise<void> {
         if (!this.page) return;
+        
         await this.page.evaluate(() => {
             (window as any).strudelMirror.stop();
         });
     }
 
+    /**
+     * Send code content to the Strudel editor
+     */
     async sendContent(content: string): Promise<void> {
         if (!this.page || !this.isReady) return;
-
         if (content === this.lastContent) return;
+        
         this.lastContent = content;
+        await this.updateEditorContent(content);
+    }
 
-        await this.page.evaluate((newContent: string) => {
+    /**
+     * Send cursor position to the Strudel editor
+     */
+    async sendCursorPosition(row: number, col: number): Promise<void> {
+        if (!this.page || !this.isReady) return;
+        
+        await this.page.evaluate(
+            ({ row, col }: { row: number; col: number }) => {
+                const view = (window as any).strudelMirror.editor;
+                const lineCount = view.state.doc.lines;
+                const clampedRow = Math.max(1, Math.min(row, lineCount));
+                const lineInfo = view.state.doc.line(clampedRow);
+                const clampedCol = Math.max(0, Math.min(col, lineInfo.length));
+                const pos = Math.min(lineInfo.from + clampedCol, lineInfo.to);
+                
+                view.dispatch({
+                    selection: { anchor: pos },
+                    scrollIntoView: true,
+                });
+            },
+            { row, col }
+        );
+    }
+
+    // ========================================================================
+    // Private Methods - Browser Setup
+    // ========================================================================
+
+    /**
+     * Launch the Puppeteer browser with configured options
+     */
+    private async launchBrowser(): Promise<void> {
+        const launchOptions: puppeteer.LaunchOptions = {
+            headless: this.config.headless,
+            defaultViewport: null,
+            ignoreDefaultArgs: ['--mute-audio', '--enable-automation'],
+            args: [
+                '--app=https://strudel.cc',
+                '--autoplay-policy=no-user-gesture-required',
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+            ],
+        };
+
+        // Configure user data directory
+        launchOptions.userDataDir = this.config.browserDataDir || 
+            path.join(os.homedir(), '.cache', 'strudel-vscode');
+
+        // Configure custom browser executable if specified
+        if (this.config.browserExecutablePath) {
+            launchOptions.executablePath = this.config.browserExecutablePath;
+        }
+
+        this.browser = await puppeteer.launch(launchOptions);
+    }
+
+    /**
+     * Setup the browser page and wait for Strudel to load
+     */
+    private async setupBrowserPage(): Promise<void> {
+        if (!this.browser) {
+            throw new Error('Browser not initialized');
+        }
+
+        // Get the first page (app page)
+        const pages = await this.browser.pages();
+        this.page = pages[0];
+
+        // Wait for Strudel to load
+        await this.page.waitForSelector('.cm-content', { timeout: 30000 });
+
+        // Setup browser event handlers
+        this.browser.on('disconnected', () => {
+            this.cleanup();
+            this.eventHandlers.onClosed?.();
+        });
+
+        this.page.on('close', () => {
+            this.cleanup();
+            this.eventHandlers.onClosed?.();
+        });
+    }
+
+    /**
+     * Initialize Strudel with styling and synchronization
+     */
+    private async initializeStrudel(): Promise<void> {
+        await this.applyCustomStyling();
+        await this.setupContentSync();
+        await this.setupErrorMonitoring();
+        
+        if (this.config.syncCursor) {
+            await this.setupCursorSync();
+        }
+    }
+
+    /**
+     * Update the editor content with diff-based approach
+     */
+    private async updateEditorContent(newContent: string): Promise<void> {
+        if (!this.page) return;
+
+        await this.page.evaluate((content: string) => {
             const view = (window as any).strudelMirror.editor;
             const oldContent = view.state.doc.toString();
 
-            // Find the first position where the content differs
+            // Find the first position where content differs
             let start = 0;
             while (
                 start < oldContent.length &&
-                start < newContent.length &&
-                oldContent[start] === newContent[start]
+                start < content.length &&
+                oldContent[start] === content[start]
             ) {
                 start++;
             }
 
-            // Find the last position where the content differs
+            // Find the last position where content differs
             let endOld = oldContent.length - 1;
-            let endNew = newContent.length - 1;
+            let endNew = content.length - 1;
             while (
                 endOld >= start &&
                 endNew >= start &&
-                oldContent[endOld] === newContent[endNew]
+                oldContent[endOld] === content[endNew]
             ) {
                 endOld--;
                 endNew--;
             }
 
-            // If there is a change, apply it
+            // Apply changes if there are any
             if (start <= endOld || start <= endNew) {
                 view.dispatch({
                     changes: {
                         from: start,
                         to: endOld + 1,
-                        insert: newContent.slice(start, endNew + 1)
-                    }
+                        insert: content.slice(start, endNew + 1),
+                    },
                 });
             }
 
             // Emulate interaction for audio playback
             (window as any).strudelMirror.root.click();
-        }, content);
+        }, newContent);
     }
 
-    async sendCursorPosition(row: number, col: number): Promise<void> {
-        if (!this.page || !this.isReady) return;
-
-        await this.page.evaluate(({ row, col }: { row: number, col: number }) => {
-            const view = (window as any).strudelMirror.editor;
-            const lineCount = view.state.doc.lines;
-            const clampedRow = Math.max(1, Math.min(row, lineCount));
-            const lineInfo = view.state.doc.line(clampedRow);
-            const clampedCol = Math.max(0, Math.min(col, lineInfo.length));
-            const pos = Math.min(lineInfo.from + clampedCol, lineInfo.to);
-            view.dispatch({
-                selection: { anchor: pos },
-                scrollIntoView: true,
-            });
-        }, { row, col });
+    /**
+     * Cleanup browser resources
+     */
+    private cleanup(): void {
+        this.browser = null;
+        this.page = null;
+        this.isReady = false;
+        this.lastContent = '';
     }
 
+    // ========================================================================
+    // Private Methods - Styling
+    // ========================================================================
+
+    /**
+     * Apply custom styling to the Strudel editor
+     */
     private async applyCustomStyling(): Promise<void> {
         if (!this.page) return;
 
-        // Base styles
+        // Apply base editor styles
+        await this.applyBaseStyles();
+        
+        // Apply UI configuration styles
+        await this.applyUIConfigStyles();
+        
+        // Apply custom CSS file if specified
+        await this.applyCustomCSSFile();
+    }
+
+    /**
+     * Apply base editor styles
+     */
+    private async applyBaseStyles(): Promise<void> {
+        if (!this.page) return;
+
         await this.page.addStyleTag({
             content: `
-            /*
-                .cm-scroller {
-                    scrollbar-width: none;
-                }
-            */
                 .cm-line:not(.cm-activeLine):has(> span) {
                     background: var(--lineBackground) !important;
                     width: fit-content;
                 }
                 .cm-line.cm-activeLine {
-                    background: linear-gradient(var(--lineHighlight), var(--lineHighlight)), var(--lineBackground) !important;
+                    background: linear-gradient(var(--lineHighlight), var(--lineHighlight)), 
+                                var(--lineBackground) !important;
                 }
-                .cm-line > *, .cm-line span[style*="background-color"] {
+                .cm-line > *, 
+                .cm-line span[style*="background-color"] {
                     background-color: transparent !important;
                     filter: none !important;
                 }
-            `
+            `,
         });
+    }
 
-        // Apply UI configuration
-        if (this.config.ui.hideTopBar) {
-            await this.page.addStyleTag({
-                content: 'header { display: none !important; }'
-            });
+    /**
+     * Apply UI configuration styles based on settings
+     */
+    private async applyUIConfigStyles(): Promise<void> {
+        if (!this.page) return;
+
+        const styleMap: Record<string, string> = {
+            hideTopBar: 'header { display: none !important; }',
+            hideMenuPanel: 'nav { display: none !important; }',
+            hideCodeEditor: '.cm-editor { display: none !important; }',
+            hideErrorDisplay: 'header + div + div { display: none !important; }',
+        };
+
+        // Apply individual UI hide styles
+        for (const [key, css] of Object.entries(styleMap)) {
+            if (this.config.ui[key as keyof typeof this.config.ui]) {
+                await this.page.addStyleTag({ content: css });
+            }
         }
 
+        // Apply maximize menu panel style
         if (this.config.ui.maximizeMenuPanel) {
             await this.page.addStyleTag({
                 content: `
@@ -276,32 +400,21 @@ export class StrudelBrowser {
                         height: 100%;
                         width: 100vw;
                         max-width: 100vw;
-                        background: linear-gradient(var(--lineHighlight), var(--lineHighlight)), var(--background);
+                        background: linear-gradient(var(--lineHighlight), var(--lineHighlight)), 
+                                    var(--background);
                     }
-                `
+                `,
             });
         }
+    }
 
-        if (this.config.ui.hideMenuPanel) {
-            await this.page.addStyleTag({
-                content: 'nav { display: none !important; }'
-            });
-        }
-
-        if (this.config.ui.hideCodeEditor) {
-            await this.page.addStyleTag({
-                content: '.cm-editor { display: none !important; }'
-            });
-        }
-
-        if (this.config.ui.hideErrorDisplay) {
-            await this.page.addStyleTag({
-                content: 'header + div + div { display: none !important; }'
-            });
-        }
-
-        // Apply custom CSS file if specified
-        if (this.config.customCssFile && fs.existsSync(this.config.customCssFile)) {
+    /**
+     * Load and apply custom CSS file if configured
+     */
+    private async applyCustomCSSFile(): Promise<void> {
+        if (!this.page || !this.config.customCssFile) return;
+        
+        if (fs.existsSync(this.config.customCssFile)) {
             try {
                 const customCss = fs.readFileSync(this.config.customCssFile, 'utf8');
                 await this.page.addStyleTag({ content: customCss });
@@ -311,10 +424,17 @@ export class StrudelBrowser {
         }
     }
 
+    // ========================================================================
+    // Private Methods - Synchronization
+    // ========================================================================
+
+    /**
+     * Setup bidirectional content synchronization
+     */
     private async setupContentSync(): Promise<void> {
         if (!this.page) return;
 
-        // Expose function to send content changes from browser to VS Code
+        // Expose function for browser to send content changes to VS Code
         await this.page.exposeFunction('sendEditorContent', async () => {
             if (!this.page) return;
 
@@ -334,14 +454,15 @@ export class StrudelBrowser {
                 const editor = document.querySelector('.cm-content');
                 if (!editor) return;
 
-                // Listen for content changes
+                // Monitor content changes using MutationObserver
                 const observer = new MutationObserver(() => {
                     editor.dispatchEvent(new CustomEvent('strudel-content-changed'));
                 });
+                
                 observer.observe(editor, {
                     childList: true,
                     characterData: true,
-                    subtree: true
+                    subtree: true,
                 });
 
                 editor.addEventListener('strudel-content-changed', (window as any).sendEditorContent);
@@ -349,19 +470,23 @@ export class StrudelBrowser {
         }
     }
 
+    /**
+     * Setup error monitoring and reporting
+     */
     private async setupErrorMonitoring(): Promise<void> {
         if (!this.page) return;
 
-        // Expose function to send eval errors
+        // Expose function for browser to send eval errors to VS Code
         await this.page.exposeFunction('notifyEvalError', (evalErrorMessage: string) => {
             if (evalErrorMessage) {
                 this.eventHandlers.onEvalError?.(evalErrorMessage);
             }
         });
 
-        // Setup error monitoring
+        // Poll for errors periodically
         await this.page.evaluate(() => {
             let lastError: string | null = null;
+            
             setInterval(() => {
                 try {
                     const currentError = (window as any).strudelMirror.repl.state.evalError.message;
@@ -370,16 +495,19 @@ export class StrudelBrowser {
                         (window as any).notifyEvalError(currentError);
                     }
                 } catch (e) {
-                    // Ignore errors (e.g., page not ready)
+                    // Ignore errors when page isn't ready
                 }
             }, 300);
         });
     }
 
+    /**
+     * Setup cursor position synchronization
+     */
     private async setupCursorSync(): Promise<void> {
         if (!this.page) return;
 
-        // Expose function to send cursor position changes
+        // Expose function for browser to send cursor position to VS Code
         await this.page.exposeFunction('sendEditorCursor', async () => {
             if (!this.page) return;
 
@@ -387,33 +515,28 @@ export class StrudelBrowser {
                 const view = (window as any).strudelMirror.editor;
                 const pos = view.state.selection.main.head;
                 const lineInfo = view.state.doc.lineAt(pos);
-                const row = lineInfo.number; // 1-based
-                const col = pos - lineInfo.from; // 0-based
-                return { row, col };
+                
+                return {
+                    row: lineInfo.number, // 1-based
+                    col: pos - lineInfo.from, // 0-based
+                };
             });
 
             this.eventHandlers.onCursorChanged?.(cursor);
         });
 
-        // Setup cursor change monitoring (only if not headless)
+        // Setup cursor change event listeners (only if not headless)
         if (!this.config.headless) {
             await this.page.evaluate(() => {
                 const editor = document.querySelector('.cm-content');
                 if (!editor) return;
 
-                // Listen for cursor changes
-                editor.addEventListener('keyup', (window as any).sendEditorCursor);
-                editor.addEventListener('keydown', (window as any).sendEditorCursor);
-                editor.addEventListener('mouseup', (window as any).sendEditorCursor);
-                editor.addEventListener('mousedown', (window as any).sendEditorCursor);
+                // Listen for all cursor-changing events
+                const events = ['keyup', 'keydown', 'mouseup', 'mousedown'];
+                events.forEach(event => {
+                    editor.addEventListener(event, (window as any).sendEditorCursor);
+                });
             });
         }
-    }
-
-    private cleanup(): void {
-        this.browser = null;
-        this.page = null;
-        this.isReady = false;
-        this.lastContent = '';
     }
 }

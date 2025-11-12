@@ -1,6 +1,13 @@
 import * as vscode from 'vscode';
 import { HydraPanel } from './hydraPanel';
 
+// ============================================================
+// HYDRA CONTROLLER
+// ============================================================
+
+/**
+ * Controller for managing Hydra visual live coding sessions
+ */
 export class HydraController {
     private panel: HydraPanel;
     private isActive = false;
@@ -10,7 +17,14 @@ export class HydraController {
         this.setupEventListeners();
     }
 
-    private setupEventListeners() {
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+
+    /**
+     * Sets up event listeners for editor and document changes
+     */
+    private setupEventListeners(): void {
         // Listen for file changes to detect when .hydra files are opened
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor && this.isHydraFile(editor.document)) {
@@ -18,7 +32,7 @@ export class HydraController {
             }
         });
 
-        // Listen for file saves
+        // Listen for file saves to auto-execute on save
         vscode.workspace.onDidSaveTextDocument(document => {
             if (this.isHydraFile(document) && this.isActive) {
                 this.evalDocument();
@@ -26,18 +40,35 @@ export class HydraController {
         });
     }
 
+    // ============================================================
+    // FILE TYPE CHECKING
+    // ============================================================
+
+    /**
+     * Checks if a document is a Hydra file
+     */
     private isHydraFile(document: vscode.TextDocument): boolean {
         return document.languageId === 'hydra' || 
                document.fileName.endsWith('.hydra');
     }
 
-    activate() {
+    // ============================================================
+    // HYDRA MODE MANAGEMENT
+    // ============================================================
+
+    /**
+     * Activates Hydra mode when a .hydra file is opened
+     */
+    activate(): void {
         if (!this.isActive) {
             this.isActive = true;
             vscode.window.showInformationMessage('Hydra mode activated!');
         }
     }
 
+    /**
+     * Evaluates the current Hydra document
+     */
     evalDocument(): void {
         const activeEditor = vscode.window.activeTextEditor;
         
@@ -60,11 +91,21 @@ export class HydraController {
         }
     }
 
+    /**
+     * Clears the Hydra output
+     */
     clear(): void {
         this.panel.clear();
         vscode.window.showInformationMessage('Hydra output cleared');
     }
 
+    // ============================================================
+    // CLEANUP
+    // ============================================================
+
+    /**
+     * Disposes of resources
+     */
     dispose(): void {
         this.panel.dispose();
         this.isActive = false;

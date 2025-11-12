@@ -1,11 +1,31 @@
 import * as vscode from 'vscode';
 
+// ============================================================
+// CONSTANTS
+// ============================================================
+
+const HYDRA_INIT_DELAY = 1000; // Time to wait for Hydra initialization (ms)
+
+// ============================================================
+// HYDRA PANEL
+// ============================================================
+
+/**
+ * Webview panel for displaying Hydra visual output
+ */
 export class HydraPanel {
     private panel?: vscode.WebviewPanel;
     private code = '';
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
+    // ============================================================
+    // HTML GENERATION
+    // ============================================================
+
+    /**
+     * Generates the HTML content for the Hydra webview
+     */
     private get html(): string {
         return `
             <!DOCTYPE html>
@@ -92,7 +112,14 @@ export class HydraPanel {
         `;
     }
 
-    evalCode(code: string) {
+    // ============================================================
+    // PUBLIC API
+    // ============================================================
+
+    /**
+     * Evaluates Hydra code in the webview
+     */
+    evalCode(code: string): void {
         this.code = code;
         if (this.panel) {
             this.panel.webview.postMessage({ type: 'evalCode', value: this.code });
@@ -101,13 +128,21 @@ export class HydraPanel {
         }
     }
 
-    clear() {
-        if (this.panel) {
-            this.panel.webview.postMessage({ type: 'clear' });
-        }
+    /**
+     * Clears the Hydra output (calls hush())
+     */
+    clear(): void {
+        this.panel?.webview.postMessage({ type: 'clear' });
     }
 
-    private createPanel() {
+    // ============================================================
+    // PANEL MANAGEMENT
+    // ============================================================
+
+    /**
+     * Creates the webview panel for Hydra output
+     */
+    private createPanel(): void {
         this.panel = vscode.window.createWebviewPanel(
             'hydra-panel',
             'Hydra Live Coding',
@@ -121,20 +156,34 @@ export class HydraPanel {
 
         this.panel.webview.html = this.html;
 
-        // Handle disposal
+        // Handle panel disposal
         this.panel.onDidDispose(() => {
             this.panel = undefined;
         });
 
-        // If we have code waiting, send it
+        // Send pending code after Hydra initializes
         if (this.code) {
-            setTimeout(() => {
-                this.panel?.webview.postMessage({ type: 'evalCode', value: this.code });
-            }, 1000); // Give Hydra time to initialize
+            this.sendCodeAfterInit();
         }
     }
 
-    dispose() {
+    /**
+     * Sends code to the webview after waiting for Hydra initialization
+     */
+    private sendCodeAfterInit(): void {
+        setTimeout(() => {
+            this.panel?.webview.postMessage({ type: 'evalCode', value: this.code });
+        }, HYDRA_INIT_DELAY);
+    }
+
+    // ============================================================
+    // CLEANUP
+    // ============================================================
+
+    /**
+     * Disposes of the webview panel
+     */
+    dispose(): void {
         this.panel?.dispose();
     }
 }

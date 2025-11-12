@@ -5,23 +5,64 @@ import { CombinedCompletionProvider } from './combinedCompletionProvider';
 import { CombinedHoverProvider } from './combinedHoverProvider';
 import { InlayHintsProvider } from './inlayHintsProvider';
 
+// ============================================================================
+// Module-level Variables
+// ============================================================================
+
 let strudelController: StrudelController;
 let hydraController: HydraController;
 let completionProvider: vscode.Disposable;
 let hoverProvider: vscode.Disposable;
 let inlayHintsProvider: vscode.Disposable;
 
-export function activate(context: vscode.ExtensionContext) {
+// ============================================================================
+// Extension Activation
+// ============================================================================
+
+export function activate(context: vscode.ExtensionContext): void {
     console.log('Strudel extension is now active');
 
-    // Initialize the Strudel controller
+    // Initialize controllers
     strudelController = new StrudelController(context);
-
-    // Initialize the Hydra controller
     hydraController = new HydraController(context);
 
-    // Register all commands
+    // Register commands
+    registerCommands(context);
+
+    // Register language providers
+    registerLanguageProviders(context);
+
+    // Register event listeners
+    registerEventListeners(context);
+
+    // Setup status bar
+    setupStatusBar(context);
+
+    console.log('Strudel extension activation complete');
+}
+
+// ============================================================================
+// Extension Deactivation
+// ============================================================================
+
+export function deactivate(): void {
+    // Dispose controllers
+    strudelController?.dispose();
+    hydraController?.dispose();
+
+    // Dispose language providers
+    completionProvider?.dispose();
+    hoverProvider?.dispose();
+    inlayHintsProvider?.dispose();
+}
+
+// ============================================================================
+// Command Registration
+// ============================================================================
+
+function registerCommands(context: vscode.ExtensionContext): void {
     const commands = [
+        // Strudel commands
         vscode.commands.registerCommand('strudel.launch', () => strudelController.launch()),
         vscode.commands.registerCommand('strudel.quit', () => strudelController.quit()),
         vscode.commands.registerCommand('strudel.toggle', () => strudelController.toggle()),
@@ -30,13 +71,20 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('strudel.setActiveEditor', () => strudelController.setActiveEditor()),
         vscode.commands.registerCommand('strudel.execute', () => strudelController.execute()),
         vscode.commands.registerCommand('strudel.launchFromEditor', () => strudelController.launch()),
-        vscode.commands.registerCommand('hydra.evalDocument', () => hydraController.evalDocument())
+        
+        // Hydra commands
+        vscode.commands.registerCommand('hydra.evalDocument', () => hydraController.evalDocument()),
     ];
 
-    // Add commands to subscription so they are disposed when extension is deactivated
     commands.forEach(cmd => context.subscriptions.push(cmd));
+}
 
-    // Setup file associations
+// ============================================================================
+// Language Provider Registration
+// ============================================================================
+
+function registerLanguageProviders(context: vscode.ExtensionContext): void {
+    // Define file selector for Strudel and Hydra files
     const selector: vscode.DocumentSelector = [
         { scheme: 'file', language: 'strudel' },
         { scheme: 'file', pattern: '**/*.str' },
@@ -44,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
         { scheme: 'file', pattern: '**/*.strudel' },
         { scheme: 'file', language: 'javascript' },
         { scheme: 'file', language: 'hydra' },
-        { scheme: 'file', pattern: '**/*.hydra' }
+        { scheme: 'file', pattern: '**/*.hydra' },
     ];
 
     // Register completion provider
@@ -52,87 +100,71 @@ export function activate(context: vscode.ExtensionContext) {
     completionProvider = vscode.languages.registerCompletionItemProvider(
         selector,
         combinedCompletionProvider,
-        '.', '(', '"', "'", ' ' // trigger on various characters
+        '.', '(', '"', "'", ' '
     );
     context.subscriptions.push(completionProvider);
 
     // Register hover provider
-    const combinedHoverProvider = new CombinedHoverProvider(combinedCompletionProvider.getDocMap());
-    hoverProvider = vscode.languages.registerHoverProvider(
-        selector,
-        combinedHoverProvider
+    const combinedHoverProvider = new CombinedHoverProvider(
+        combinedCompletionProvider.getDocMap()
     );
+    hoverProvider = vscode.languages.registerHoverProvider(selector, combinedHoverProvider);
     context.subscriptions.push(hoverProvider);
 
     // Register inlay hints provider
     const inlayHints = new InlayHintsProvider(combinedCompletionProvider.getDocMap());
-    inlayHintsProvider = vscode.languages.registerInlayHintsProvider(
-        selector,
-        inlayHints
-    );
+    inlayHintsProvider = vscode.languages.registerInlayHintsProvider(selector, inlayHints);
     context.subscriptions.push(inlayHintsProvider);
-
-    // Register document change listeners
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(event => {
-            if (strudelController) {
-                strudelController.onDocumentChanged(event);
-            }
-        })
-    );
-
-    // Register cursor position changes
-    context.subscriptions.push(
-        vscode.window.onDidChangeTextEditorSelection(event => {
-            if (strudelController) {
-                strudelController.onCursorPositionChanged(event);
-            }
-        })
-    );
-
-    // Register save events
-    context.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(document => {
-            if (strudelController) {
-                strudelController.onDocumentSaved(document);
-            }
-        })
-    );
-
-    // Register active editor changes
-    context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(editor => {
-            if (strudelController) {
-                strudelController.onActiveEditorChanged(editor);
-            }
-        })
-    );
-
-    // Status bar item
-    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    statusBarItem.text = "$(play) Strudel";
-    statusBarItem.tooltip = "Launch Strudel";
-    statusBarItem.command = 'strudel.launch';
-    context.subscriptions.push(statusBarItem);
-    statusBarItem.show();
-
-    console.log('Strudel extension activation complete');
 }
 
-export function deactivate() {
-    if (strudelController) {
-        strudelController.dispose();
-    }
-    if (hydraController) {
-        hydraController.dispose();
-    }
-    if (completionProvider) {
-        completionProvider.dispose();
-    }
-    if (hoverProvider) {
-        hoverProvider.dispose();
-    }
-    if (inlayHintsProvider) {
-        inlayHintsProvider.dispose();
-    }
+// ============================================================================
+// Event Listener Registration
+// ============================================================================
+
+function registerEventListeners(context: vscode.ExtensionContext): void {
+    // Document change events
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument(event => {
+            strudelController?.onDocumentChanged(event);
+        })
+    );
+
+    // Cursor position change events
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorSelection(event => {
+            strudelController?.onCursorPositionChanged(event);
+        })
+    );
+
+    // Document save events
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument(document => {
+            strudelController?.onDocumentSaved(document);
+        })
+    );
+
+    // Active editor change events
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            strudelController?.onActiveEditorChanged(editor);
+        })
+    );
+}
+
+// ============================================================================
+// Status Bar Setup
+// ============================================================================
+
+function setupStatusBar(context: vscode.ExtensionContext): void {
+    const statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left,
+        100
+    );
+    
+    statusBarItem.text = '$(play) Strudel';
+    statusBarItem.tooltip = 'Launch Strudel';
+    statusBarItem.command = 'strudel.launch';
+    
+    context.subscriptions.push(statusBarItem);
+    statusBarItem.show();
 }

@@ -2,6 +2,13 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { StrudelBrowser } from './strudelBrowser';
 
+// ============================================================
+// TYPES & INTERFACES
+// ============================================================
+
+/**
+ * Configuration interface for Strudel settings
+ */
 export interface StrudelConfig {
     ui: {
         maximizeMenuPanel: boolean;
@@ -19,6 +26,21 @@ export interface StrudelConfig {
     browserExecutablePath: string;
 }
 
+/**
+ * Position in the editor (1-based row, 0-based column)
+ */
+interface CursorPosition {
+    row: number;
+    col: number;
+}
+
+// ============================================================
+// STRUDEL CONTROLLER
+// ============================================================
+
+/**
+ * Controller for managing Strudel browser sessions and document synchronization
+ */
 export class StrudelController {
     private browser: StrudelBrowser | null = null;
     private activeDocument: vscode.TextDocument | null = null;
@@ -28,8 +50,17 @@ export class StrudelController {
 
     constructor(private context: vscode.ExtensionContext) {
         this.config = this.loadConfig();
-        
-        // Watch for configuration changes
+        this.watchConfigurationChanges();
+    }
+
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
+
+    /**
+     * Watches for configuration changes and reloads config when needed
+     */
+    private watchConfigurationChanges(): void {
         this.disposables.push(
             vscode.workspace.onDidChangeConfiguration(e => {
                 if (e.affectsConfiguration('strudel')) {
@@ -39,6 +70,9 @@ export class StrudelController {
         );
     }
 
+    /**
+     * Loads the Strudel configuration from VS Code settings
+     */
     private loadConfig(): StrudelConfig {
         const config = vscode.workspace.getConfiguration('strudel');
         
@@ -60,6 +94,13 @@ export class StrudelController {
         };
     }
 
+    // ============================================================
+    // BROWSER LIFECYCLE
+    // ============================================================
+
+    /**
+     * Launches a new Strudel browser session
+     */
     async launch(): Promise<void> {
         if (this.browser) {
             vscode.window.showWarningMessage('Strudel is already running. Use "Quit Strudel" to close it first.');
@@ -68,32 +109,8 @@ export class StrudelController {
 
         try {
             this.browser = new StrudelBrowser(this.config, this.context);
+            this.setupBrowserEventHandlers();
             
-            // Setup event handlers
-            this.browser.onReady(() => {
-                vscode.window.showInformationMessage('Strudel browser is ready!');
-                this.setActiveEditor(); // Automatically sync current editor
-            });
-
-            this.browser.onContentChanged((content: string) => {
-                this.handleContentFromBrowser(content);
-            });
-
-            this.browser.onCursorChanged((position: { row: number; col: number }) => {
-                this.handleCursorFromBrowser(position);
-            });
-
-            this.browser.onEvalError((error: string) => {
-                if (this.config.reportEvalErrors) {
-                    vscode.window.showErrorMessage(`Strudel Error: ${error}`);
-                }
-            });
-
-            this.browser.onClosed(() => {
-                this.browser = null;
-                vscode.window.showInformationMessage('Strudel session closed');
-            });
-
             await this.browser.launch();
             vscode.window.showInformationMessage('Launching Strudel browser...');
             
@@ -102,6 +119,40 @@ export class StrudelController {
         }
     }
 
+    /**
+     * Sets up event handlers for browser events
+     */
+    private setupBrowserEventHandlers(): void {
+        if (!this.browser) return;
+
+        this.browser.onReady(() => {
+            vscode.window.showInformationMessage('Strudel browser is ready!');
+            this.setActiveEditor(); // Automatically sync current editor
+        });
+
+        this.browser.onContentChanged((content: string) => {
+            this.handleContentFromBrowser(content);
+        });
+
+        this.browser.onCursorChanged((position: CursorPosition) => {
+            this.handleCursorFromBrowser(position);
+        });
+
+        this.browser.onEvalError((error: string) => {
+            if (this.config.reportEvalErrors) {
+                vscode.window.showErrorMessage(`Strudel Error: ${error}`);
+            }
+        });
+
+        this.browser.onClosed(() => {
+            this.browser = null;
+            vscode.window.showInformationMessage('Strudel session closed');
+        });
+    }
+
+    /**
+     * Quits the active Strudel browser session
+     */
     async quit(): Promise<void> {
         if (!this.browser) {
             vscode.window.showWarningMessage('No active Strudel session');
@@ -116,45 +167,67 @@ export class StrudelController {
         }
     }
 
+    // ============================================================
+    // PLAYBACK CONTROL
+    // ============================================================
+
+    /**
+     * Toggles playback (play/pause)
+     */
     async toggle(): Promise<void> {
-        if (!this.browser) {
-            vscode.window.showWarningMessage('No active Strudel session');
-            return;
-        }
+        if (!this.validateBrowserSession()) return;
 
         try {
-            await this.browser.toggle();
+            await this.browser!.toggle();
         } catch (error) {
             vscode.window.showErrorMessage(`Error toggling playback: ${error}`);
         }
     }
 
+    /**
+     * Updates the code in the browser (evaluates current document)
+     */
     async update(): Promise<void> {
-        if (!this.browser) {
-            vscode.window.showWarningMessage('No active Strudel session');
-            return;
-        }
+        if (!this.validateBrowserSession()) return;
 
         try {
-            await this.browser.update();
+            await this.browser!.update();
         } catch (error) {
             vscode.window.showErrorMessage(`Error updating code: ${error}`);
         }
     }
 
+    /**
+     * Stops playback
+     */
     async stop(): Promise<void> {
-        if (!this.browser) {
-            vscode.window.showWarningMessage('No active Strudel session');
-            return;
-        }
+        if (!this.validateBrowserSession()) return;
 
         try {
-            await this.browser.stop();
+            await this.browser!.stop();
         } catch (error) {
             vscode.window.showErrorMessage(`Error stopping playback: ${error}`);
         }
     }
 
+    /**
+     * Validates that a browser session exists
+     */
+    private validateBrowserSession(): boolean {
+        if (!this.browser) {
+            vscode.window.showWarningMessage('No active Strudel session');
+            return false;
+        }
+        return true;
+    }
+
+    // ============================================================
+    // DOCUMENT MANAGEMENT
+    // ============================================================
+
+    /**
+     * Sets the active editor as the source for Strudel synchronization
+     */
     setActiveEditor(): boolean {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
@@ -175,6 +248,9 @@ export class StrudelController {
         return true;
     }
 
+    /**
+     * Executes the current document (sets as active and updates)
+     */
     async execute(): Promise<void> {
         if (this.setActiveEditor()) {
             // Small delay to ensure content is synced before updating
@@ -184,52 +260,9 @@ export class StrudelController {
         }
     }
 
-    onDocumentChanged(event: vscode.TextDocumentChangeEvent): void {
-        if (!this.browser || this.isProcessingChange || !this.activeDocument) {
-            return;
-        }
-
-        if (event.document.uri.toString() === this.activeDocument.uri.toString()) {
-            this.sendCurrentDocumentContent();
-        }
-    }
-
-    onCursorPositionChanged(event: vscode.TextEditorSelectionChangeEvent): void {
-        if (!this.browser || !this.config.syncCursor || !this.activeDocument || this.isProcessingChange) {
-            return;
-        }
-
-        if (event.textEditor.document.uri.toString() === this.activeDocument.uri.toString()) {
-            const selection = event.selections[0];
-            if (selection) {
-                this.browser.sendCursorPosition(selection.active.line + 1, selection.active.character);
-            }
-        }
-    }
-
-    onDocumentSaved(document: vscode.TextDocument): void {
-        if (!this.browser || !this.config.updateOnSave || !this.activeDocument) {
-            return;
-        }
-
-        if (document.uri.toString() === this.activeDocument.uri.toString()) {
-            // Use refresh instead of update to only update if already playing
-            this.browser.refresh();
-        }
-    }
-
-    onActiveEditorChanged(editor: vscode.TextEditor | undefined): void {
-        if (!editor || !this.browser) {
-            return;
-        }
-
-        // Auto-sync when switching to a Strudel document
-        if (this.isStrudelDocument(editor.document)) {
-            this.activeDocument = editor.document;
-            this.sendCurrentDocumentContent();
-        }
-    }
-
+    /**
+     * Checks if a document is a Strudel-compatible file
+     */
     private isStrudelDocument(document: vscode.TextDocument): boolean {
         const fileName = document.fileName.toLowerCase();
         return fileName.endsWith('.str') || 
@@ -238,15 +271,102 @@ export class StrudelController {
                document.languageId === 'strudel';
     }
 
-    private sendCurrentDocumentContent(): void {
-        if (!this.browser || !this.activeDocument) {
+    // ============================================================
+    // EDITOR EVENT HANDLERS
+    // ============================================================
+
+    /**
+     * Handles document content changes
+     */
+    onDocumentChanged(event: vscode.TextDocumentChangeEvent): void {
+        if (!this.shouldSyncDocument(event.document)) return;
+        this.sendCurrentDocumentContent();
+    }
+
+    /**
+     * Handles cursor position changes in the editor
+     */
+    onCursorPositionChanged(event: vscode.TextEditorSelectionChangeEvent): void {
+        if (!this.shouldSyncCursor(event.textEditor.document)) return;
+
+        const selection = event.selections[0];
+        if (selection) {
+            // Convert to 1-based row for browser
+            this.browser!.sendCursorPosition(selection.active.line + 1, selection.active.character);
+        }
+    }
+
+    /**
+     * Handles document save events
+     */
+    onDocumentSaved(document: vscode.TextDocument): void {
+        if (!this.browser || !this.config.updateOnSave || !this.activeDocument) {
             return;
         }
+
+        if (this.isActiveDocument(document)) {
+            // Use refresh instead of update to only update if already playing
+            this.browser.refresh();
+        }
+    }
+
+    /**
+     * Handles active editor changes (switching between files)
+     */
+    onActiveEditorChanged(editor: vscode.TextEditor | undefined): void {
+        if (!editor || !this.browser) return;
+
+        // Auto-sync when switching to a Strudel document
+        if (this.isStrudelDocument(editor.document)) {
+            this.activeDocument = editor.document;
+            this.sendCurrentDocumentContent();
+        }
+    }
+
+    // ============================================================
+    // SYNCHRONIZATION HELPERS
+    // ============================================================
+
+    /**
+     * Checks if document changes should be synced
+     */
+    private shouldSyncDocument(document: vscode.TextDocument): boolean {
+        return !!(this.browser && !this.isProcessingChange && this.activeDocument && 
+                  this.isActiveDocument(document));
+    }
+
+    /**
+     * Checks if cursor changes should be synced
+     */
+    private shouldSyncCursor(document: vscode.TextDocument): boolean {
+        return !!(this.browser && this.config.syncCursor && this.activeDocument && 
+                  !this.isProcessingChange && this.isActiveDocument(document));
+    }
+
+    /**
+     * Checks if the given document is the active synced document
+     */
+    private isActiveDocument(document: vscode.TextDocument): boolean {
+        return document.uri.toString() === this.activeDocument?.uri.toString();
+    }
+
+    /**
+     * Sends the current document content to the browser
+     */
+    private sendCurrentDocumentContent(): void {
+        if (!this.browser || !this.activeDocument) return;
 
         const content = this.activeDocument.getText().replace(/\r\n/g, '\n');
         this.browser.sendContent(content);
 
         // Send cursor position after content
+        this.sendCurrentCursorPosition();
+    }
+
+    /**
+     * Sends the current cursor position to the browser
+     */
+    private sendCurrentCursorPosition(): void {
         const editor = vscode.window.activeTextEditor;
         if (editor && this.config.syncCursor) {
             const selection = editor.selection;
@@ -256,15 +376,18 @@ export class StrudelController {
         }
     }
 
+    // ============================================================
+    // BROWSER-TO-EDITOR SYNCHRONIZATION
+    // ============================================================
+
+    /**
+     * Handles content changes from the browser
+     */
     private handleContentFromBrowser(content: string): void {
-        if (!this.activeDocument) {
-            return;
-        }
+        if (!this.activeDocument) return;
 
         // Prevent infinite loops
-        if (this.activeDocument.getText() === content) {
-            return;
-        }
+        if (this.activeDocument.getText() === content) return;
 
         this.isProcessingChange = true;
 
@@ -278,13 +401,25 @@ export class StrudelController {
         }, 100);
     }
 
+    /**
+     * Applies content changes using minimal diff to avoid disrupting cursor position
+     */
     private async applyContentChange(oldContent: string, newContent: string): Promise<void> {
         const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.uri.toString() !== this.activeDocument?.uri.toString()) {
-            return;
-        }
+        if (!editor || !this.isActiveDocument(editor.document)) return;
 
-        // Find the range that needs to be replaced
+        const diffRange = this.findDiffRange(oldContent, newContent);
+        if (diffRange) {
+            await editor.edit(editBuilder => {
+                editBuilder.replace(diffRange.range, diffRange.replacement);
+            });
+        }
+    }
+
+    /**
+     * Finds the minimal range that differs between old and new content
+     */
+    private findDiffRange(oldContent: string, newContent: string): { range: vscode.Range; replacement: string } | null {
         let start = 0;
         let endOld = oldContent.length;
         let endNew = newContent.length;
@@ -302,48 +437,69 @@ export class StrudelController {
             endNew--;
         }
 
-        if (start < endOld || start < endNew) {
-            const startPos = editor.document.positionAt(start);
-            const endPos = editor.document.positionAt(endOld);
-            const range = new vscode.Range(startPos, endPos);
-            const replacement = newContent.substring(start, endNew);
-
-            await editor.edit(editBuilder => {
-                editBuilder.replace(range, replacement);
-            });
-        }
-    }
-
-    private handleCursorFromBrowser(position: { row: number; col: number }): void {
-        if (!this.config.syncCursor || !this.activeDocument || this.isProcessingChange) {
-            return;
+        if (start >= endOld && start >= endNew) {
+            return null; // No changes
         }
 
         const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.uri.toString() !== this.activeDocument.uri.toString()) {
-            return;
-        }
+        if (!editor) return null;
+
+        const startPos = editor.document.positionAt(start);
+        const endPos = editor.document.positionAt(endOld);
+        const range = new vscode.Range(startPos, endPos);
+        const replacement = newContent.substring(start, endNew);
+
+        return { range, replacement };
+    }
+
+    /**
+     * Handles cursor position changes from the browser
+     */
+    private handleCursorFromBrowser(position: CursorPosition): void {
+        if (!this.config.syncCursor || !this.activeDocument || this.isProcessingChange) return;
+
+        const editor = vscode.window.activeTextEditor;
+        if (!editor || !this.isActiveDocument(editor.document)) return;
 
         this.isProcessingChange = true;
 
-        // Convert 1-based row to 0-based and clamp to valid range
-        const line = Math.max(0, Math.min(position.row - 1, editor.document.lineCount - 1));
-        const lineText = editor.document.lineAt(line).text;
-        const character = Math.max(0, Math.min(position.col, lineText.length));
-
-        const newPosition = new vscode.Position(line, character);
-        editor.selection = new vscode.Selection(newPosition, newPosition);
-        editor.revealRange(new vscode.Range(newPosition, newPosition));
+        const newPosition = this.calculateEditorPosition(editor, position);
+        this.updateEditorCursor(editor, newPosition);
 
         setTimeout(() => {
             this.isProcessingChange = false;
         }, 100);
     }
 
+    /**
+     * Calculates the editor position from browser position (with bounds checking)
+     */
+    private calculateEditorPosition(editor: vscode.TextEditor, position: CursorPosition): vscode.Position {
+        // Convert 1-based row to 0-based and clamp to valid range
+        const line = Math.max(0, Math.min(position.row - 1, editor.document.lineCount - 1));
+        const lineText = editor.document.lineAt(line).text;
+        const character = Math.max(0, Math.min(position.col, lineText.length));
+
+        return new vscode.Position(line, character);
+    }
+
+    /**
+     * Updates the editor cursor position and reveals it
+     */
+    private updateEditorCursor(editor: vscode.TextEditor, position: vscode.Position): void {
+        editor.selection = new vscode.Selection(position, position);
+        editor.revealRange(new vscode.Range(position, position));
+    }
+
+    // ============================================================
+    // CLEANUP
+    // ============================================================
+
+    /**
+     * Disposes of resources
+     */
     dispose(): void {
         this.disposables.forEach(d => d.dispose());
-        if (this.browser) {
-            this.browser.quit();
-        }
+        this.browser?.quit();
     }
 }
