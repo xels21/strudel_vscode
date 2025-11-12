@@ -19,11 +19,6 @@
     "audio",
     "patterns"
   ],
-  "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:hydra",
-    "onCommand:strudel.launch"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
