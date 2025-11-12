@@ -3,11 +3,13 @@ import { StrudelController } from './strudelController';
 import { HydraController } from './hydraController';
 import { CombinedCompletionProvider } from './combinedCompletionProvider';
 import { CombinedHoverProvider } from './combinedHoverProvider';
+import { InlayHintsProvider } from './inlayHintsProvider';
 
 let strudelController: StrudelController;
 let hydraController: HydraController;
 let completionProvider: vscode.Disposable;
 let hoverProvider: vscode.Disposable;
+let inlayHintsProvider: vscode.Disposable;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Strudel extension is now active');
@@ -61,6 +63,14 @@ export function activate(context: vscode.ExtensionContext) {
         combinedHoverProvider
     );
     context.subscriptions.push(hoverProvider);
+
+    // Register inlay hints provider
+    const inlayHints = new InlayHintsProvider(combinedCompletionProvider.getDocMap());
+    inlayHintsProvider = vscode.languages.registerInlayHintsProvider(
+        selector,
+        inlayHints
+    );
+    context.subscriptions.push(inlayHintsProvider);
 
     // Register document change listeners
     context.subscriptions.push(
@@ -121,5 +131,8 @@ export function deactivate() {
     }
     if (hoverProvider) {
         hoverProvider.dispose();
+    }
+    if (inlayHintsProvider) {
+        inlayHintsProvider.dispose();
     }
 }

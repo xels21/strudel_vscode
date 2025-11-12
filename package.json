@@ -164,6 +164,11 @@
           "default": true,
           "description": "Report evaluation errors from Strudel as VS Code notifications"
         },
+        "strudel.showParameterHints": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show parameter names as inlay hints in function calls"
+        },
         "strudel.customCssFile": {
           "type": "string",
           "default": "",
