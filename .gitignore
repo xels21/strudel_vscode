@@ -6,3 +6,4 @@ node_modules
 _strudel
 _hydra
 _hydra_vscode
+*.zip
