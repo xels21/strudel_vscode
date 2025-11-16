@@ -1,6 +1,8 @@
 # Strudel VS Code Extension
 
-> This project is an adaptadion of the neovim extension (strudel.nvim)[https://github.com/gruvw/strudel.nvim]
+> This project is an adaptadion of the neovim extension (strudel.nvim)[https://github.com/gruvw/strudel.nvim].
+>
+> Also includes logic for hydra files (hydra extension)[https://github.com/jdomizz/vscode-hydra]
 
 A VS Code extension that integrates with [Strudel](https://strudel.cc/), a live coding web editor for algorithmic music and visuals.
 

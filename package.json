@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "publisher": "strudel",
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.106.0"
   },
   "categories": [
     "Other",
@@ -20,6 +20,9 @@
     "patterns"
   ],
   "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:javascript"
+  ],
   "contributes": {
     "commands": [
       {

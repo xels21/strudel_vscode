@@ -1,0 +1,51 @@
+# Development files
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+.gitattributes
+.eslintrc.json
+tsconfig.json
+tslint.json
+
+# Node modules
+node_modules/**
+
+# Source maps
+**/*.map
+
+# Test files
+test/**
+**/*.test.ts
+**/*.test.js
+
+# Documentation
+*.md
+!README.md
+
+# Build scripts
+setup.bat
+setup.sh
+helper/**
+mocks/**
+
+# Auto-generated files during development
+generateHydraCompletions.js
+test-*.js
+test-*.strudel
+test-*.hydra
+test-*.str
+test-*.md
+verify-*.md
+syntax-demo.*
+*-implementation*.md
+*-summary.md
+*-docs.md
+strikethrough-fix.md
+
+# TypeScript source files (keep only compiled .js files)
+**/*.ts
+!**/*.d.ts
+
+# Package files
+*.vsix
