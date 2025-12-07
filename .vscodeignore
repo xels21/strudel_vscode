@@ -9,7 +9,7 @@ tsconfig.json
 tslint.json
 
 # Node modules
-node_modules/**
+# node_modules/**
 
 # Source maps
 **/*.map
